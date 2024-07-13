@@ -4,6 +4,8 @@ from pubsub import pub
 import time as time_module
 import sqlite3
 
+
+
 def initialize_db():
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
@@ -146,6 +148,16 @@ def on_receive(packet, interface):
             
             print(f"Telemetry data received from {from_short_name} ({fromId}): battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
             store_telemetry(fromId, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp)
+        elif portnum == 'POSITION_APP':
+            position = packet['decoded'].get('position', {})
+            latitude = position.get('latitude', None)
+            longitude = position.get('longitude', None)
+            altitude = position.get('altitude', None)
+            time = position.get('time', None)
+            sats_in_view = position.get('satsInView', None)
+            
+            print(f"Position data received from {from_short_name} ({fromId}): latitude={latitude}, longitude={longitude}, altitude={altitude}, time={time}, sats_in_view={sats_in_view}")
+            store_position(fromId, latitude, longitude, altitude, time, sats_in_view, timestamp)
         elif portnum == 'ENVIRONMENT_APP':
             environment = packet['decoded'].get('environment', {})
             temperature = environment.get('temperature', None)
@@ -178,7 +190,7 @@ def on_receive(packet, interface):
         store_message(message_id, fromId, toId, encrypted_text, timestamp, channel)
     else:
         print(f"Unknown message format: {packet}")
-
+        
 def mark_message_as_read(message_id):
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
