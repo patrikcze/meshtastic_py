@@ -3,8 +3,12 @@ import meshtastic.serial_interface
 from pubsub import pub
 import time as time_module
 import sqlite3
+import threading
+from queue import Queue, Empty
 
-
+# Global variables for database connection pooling
+db_queue = Queue()
+stop_event = threading.Event()
 
 def initialize_db():
     conn = sqlite3.connect('messages.db')
@@ -35,7 +39,9 @@ def initialize_db():
     c.execute('''CREATE TABLE IF NOT EXISTS nodes (
                     node_id TEXT PRIMARY KEY,
                     short_name TEXT,
-                    long_name TEXT
+                    long_name TEXT,
+                    hw_model TEXT,
+                    last_heard INTEGER
                 )''')
     # Create positions table
     c.execute('''CREATE TABLE IF NOT EXISTS positions (
@@ -61,54 +67,47 @@ def initialize_db():
     conn.commit()
     conn.close()
 
-def store_message(message_id, sender, recipient, message, timestamp, channel):
+def db_worker():
     conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    try:
-        c.execute('''INSERT INTO messages (message_id, sender, recipient, message, timestamp, channel) VALUES (?, ?, ?, ?, ?, ?)''', 
-                  (message_id, sender, recipient, message, timestamp, channel))
-        conn.commit()
-    except sqlite3.IntegrityError:
-        print(f"Duplicate message with ID {message_id} detected. Ignoring...")
+    while not stop_event.is_set():
+        try:
+            task = db_queue.get(timeout=1)
+        except Empty:
+            continue
+        cursor = conn.cursor()
+        try:
+            cursor.execute(*task)
+            conn.commit()
+        except sqlite3.IntegrityError as e:
+            print(f"SQLite Error: {e}")
+        db_queue.task_done()
     conn.close()
+
+def store_message(message_id, sender, recipient, message, timestamp, channel):
+    query = '''INSERT INTO messages (message_id, sender, recipient, message, timestamp, channel) VALUES (?, ?, ?, ?, ?, ?)'''
+    db_queue.put((query, (message_id, sender, recipient, message, timestamp, channel)))
 
 def store_telemetry(node_id, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp):
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    c.execute('''INSERT INTO telemetry (node_id, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp)
-                 VALUES (?, ?, ?, ?, ?, ?, ?)''', 
-              (node_id, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp))
-    conn.commit()
-    conn.close()
+    query = '''INSERT INTO telemetry (node_id, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    db_queue.put((query, (node_id, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp)))
 
 def store_position(node_id, latitude, longitude, altitude, time, sats_in_view, timestamp):
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    c.execute('''INSERT INTO positions (node_id, latitude, longitude, altitude, time, sats_in_view, timestamp)
-                 VALUES (?, ?, ?, ?, ?, ?, ?)''', 
-              (node_id, latitude, longitude, altitude, time, sats_in_view, timestamp))
-    conn.commit()
-    conn.close()
+    query = '''INSERT INTO positions (node_id, latitude, longitude, altitude, time, sats_in_view, timestamp)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    db_queue.put((query, (node_id, latitude, longitude, altitude, time, sats_in_view, timestamp)))
 
 def store_environment(node_id, temperature, humidity, bar, iaq, timestamp):
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    c.execute('''INSERT INTO environment (node_id, temperature, humidity, bar, iaq, timestamp)
-                 VALUES (?, ?, ?, ?, ?, ?)''', 
-              (node_id, temperature, humidity, bar, iaq, timestamp))
-    conn.commit()
-    conn.close()
+    query = '''INSERT INTO environment (node_id, temperature, humidity, bar, iaq, timestamp)
+                 VALUES (?, ?, ?, ?, ?, ?)'''
+    db_queue.put((query, (node_id, temperature, humidity, bar, iaq, timestamp)))
 
-def upsert_node(node_id, short_name, long_name):
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    c.execute('''INSERT INTO nodes (node_id, short_name, long_name)
-                 VALUES (?, ?, ?)
+def upsert_node(node_id, short_name, long_name, hw_model, last_heard):
+    query = '''INSERT INTO nodes (node_id, short_name, long_name, hw_model, last_heard)
+                 VALUES (?, ?, ?, ?, ?)
                  ON CONFLICT(node_id) DO UPDATE SET
-                 short_name=excluded.short_name, long_name=excluded.long_name''', 
-              (node_id, short_name, long_name))
-    conn.commit()
-    conn.close()
+                 short_name=excluded.short_name, long_name=excluded.long_name, hw_model=excluded.hw_model, last_heard=excluded.last_heard'''
+    db_queue.put((query, (node_id, short_name, long_name, hw_model, last_heard)))
 
 def on_receive(packet, interface):
     """Callback function to handle received messages."""
@@ -126,13 +125,17 @@ def on_receive(packet, interface):
         from_node_info = interface.nodes.get(fromId, {})
         from_short_name = from_node_info.get('user', {}).get('shortName', '')
         from_long_name = from_node_info.get('user', {}).get('longName', '')
+        from_hw_model = from_node_info.get('user', {}).get('hwModel', '')
+        from_last_heard = from_node_info.get('lastHeard', 0)
         to_node_info = interface.nodes.get(toId, {})
         to_short_name = to_node_info.get('user', {}).get('shortName', '')
         to_long_name = to_node_info.get('user', {}).get('longName', '')
+        to_hw_model = to_node_info.get('user', {}).get('hwModel', '')
+        to_last_heard = to_node_info.get('lastHeard', 0)
         
         # Upsert node information
-        upsert_node(fromId, from_short_name, from_long_name)
-        upsert_node(toId, to_short_name, to_long_name)
+        upsert_node(fromId, from_short_name, from_long_name, from_hw_model, from_last_heard)
+        upsert_node(toId, to_short_name, to_long_name, to_hw_model, to_last_heard)
         
         # Filter for text messages only
         if portnum == 'TEXT_MESSAGE_APP' and text:
@@ -172,7 +175,6 @@ def on_receive(packet, interface):
             long_name = node_info.get('longName', None)
             short_name = node_info.get('shortName', None)
             hw_model = node_info.get('hwModel', None)
-            snr = packet['decoded'].get('snr', None)
             last_heard = packet['decoded'].get('lastHeard', None)
             device_metrics = packet['decoded'].get('deviceMetrics', {})
             battery_level = device_metrics.get('batteryLevel', None)
@@ -181,8 +183,8 @@ def on_receive(packet, interface):
             air_util_tx = device_metrics.get('airUtilTx', None)
             uptime_seconds = device_metrics.get('uptimeSeconds', None)
             
-            print(f"Node info received from {from_short_name} ({fromId}): long_name={long_name}, short_name={short_name}, hw_model={hw_model}, snr={snr}, last_heard={last_heard}, battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
-            upsert_node(fromId, short_name, long_name)
+            print(f"Node info received from {from_short_name} ({fromId}): long_name={long_name}, short_name={short_name}, hw_model={hw_model}, last_heard={last_heard}, battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
+            upsert_node(fromId, short_name, long_name, hw_model, last_heard)
         else:
             print(f"Non-text message or empty text received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {portnum}")
     elif 'encrypted' in packet:
@@ -195,41 +197,45 @@ def on_receive(packet, interface):
         from_node_info = interface.nodes.get(fromId, {})
         from_short_name = from_node_info.get('user', {}).get('shortName', '')
         from_long_name = from_node_info.get('user', {}).get('longName', '')
+        from_hw_model = from_node_info.get('user', {}).get('hwModel', '')
+        from_last_heard = from_node_info.get('lastHeard', 0)
         to_node_info = interface.nodes.get(toId, {})
         to_short_name = to_node_info.get('user', {}).get('shortName', '')
         to_long_name = to_node_info.get('user', {}).get('longName', '')
+        to_hw_model = to_node_info.get('user', {}).get('hwModel', '')
+        to_last_heard = to_node_info.get('lastHeard', 0)
         
-        upsert_node(fromId, from_short_name, from_long_name)
-        upsert_node(toId, to_short_name, to_long_name)
+        upsert_node(fromId, from_short_name, from_long_name, from_hw_model, from_last_heard)
+        upsert_node(toId, to_short_name, to_long_name, to_hw_model, to_last_heard)
         
         print(f"Encrypted message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {encrypted_text}")
         store_message(message_id, fromId, toId, encrypted_text, timestamp, channel)
     else:
         print(f"Unknown message format: {packet}")
 
-
-        
-def mark_message_as_read(message_id):
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    c.execute('UPDATE messages SET read = 1 WHERE message_id = ?', (message_id,))
-    conn.commit()
-    conn.close()
-
-def get_unread_messages():
-    conn = sqlite3.connect('messages.db')
-    c = conn.cursor()
-    c.execute('SELECT * FROM messages WHERE read = 0')
-    messages = c.fetchall()
-    conn.close()
-    return messages
+def reconnect(interface):
+    while not stop_event.is_set():
+        try:
+            if not interface.isConnected:
+                print("Reconnecting...")
+                interface.connect()
+            time_module.sleep(10)
+        except Exception as e:
+            print(f"Reconnection failed: {e}")
+            time_module.sleep(10)
 
 def main():
     # Initialize the database
     initialize_db()
 
+    # Start the database worker thread
+    threading.Thread(target=db_worker, daemon=True).start()
+
     # Initialize the serial interface
     interface = meshtastic.serial_interface.SerialInterface()
+
+    # Start the reconnection thread
+    threading.Thread(target=reconnect, args=(interface,), daemon=True).start()
 
     # Subscribe to messages
     pub.subscribe(on_receive, "meshtastic.receive")
@@ -241,6 +247,8 @@ def main():
             time_module.sleep(1)
     except KeyboardInterrupt:
         print("Stopping message listener...")
+        stop_event.set()
+        db_queue.join()
 
 if __name__ == "__main__":
     main()
