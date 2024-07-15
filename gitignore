@@ -123,4 +123,4 @@ cython_debug/
 
 # Exclude messages.db
 messages.db
-*/messages.db
+
