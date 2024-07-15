@@ -26,4 +26,4 @@ for d in sds:
     print(f" name:{d.name}{d.version} firmware:{d.for_firmware}")
 
 ports = active_ports_on_supported_devices(sds)
-print(f"ports:{ports}")p
+print(f"ports:{ports}")
