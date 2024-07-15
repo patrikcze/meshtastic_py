@@ -1,6 +1,25 @@
 # Basic script to store Meshtastic packet data to SQLITE3 db
 
 This is just proof of concept.
+Script uses default Serial connection. 
+
+Really basic setup :
+```python
+    # Initialize the serial interface
+    interface = meshtastic.serial_interface.SerialInterface()
+
+    # Subscribe to messages
+    pub.subscribe(on_receive, "meshtastic.receive")
+```
+
+## Requirements
+
+Requires `meshtastic` and `pytap2` and `sqlite3` modules.
+
+```shell
+pip3 install meshtastic
+pip3 install pytap2
+```
 
 ## Description
 
