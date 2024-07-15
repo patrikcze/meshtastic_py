@@ -167,6 +167,22 @@ def on_receive(packet, interface):
 
             print(f"Environment data received from {from_short_name} ({fromId}): temperature={temperature}, humidity={humidity}, bar={bar}, iaq={iaq}")
             store_environment(fromId, temperature, humidity, bar, iaq, timestamp)
+        elif portnum == 'NODEINFO_APP':
+            node_info = packet['decoded'].get('user', {})
+            long_name = node_info.get('longName', None)
+            short_name = node_info.get('shortName', None)
+            hw_model = node_info.get('hwModel', None)
+            snr = packet['decoded'].get('snr', None)
+            last_heard = packet['decoded'].get('lastHeard', None)
+            device_metrics = packet['decoded'].get('deviceMetrics', {})
+            battery_level = device_metrics.get('batteryLevel', None)
+            voltage = device_metrics.get('voltage', None)
+            channel_utilization = device_metrics.get('channelUtilization', None)
+            air_util_tx = device_metrics.get('airUtilTx', None)
+            uptime_seconds = device_metrics.get('uptimeSeconds', None)
+            
+            print(f"Node info received from {from_short_name} ({fromId}): long_name={long_name}, short_name={short_name}, hw_model={hw_model}, snr={snr}, last_heard={last_heard}, battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
+            upsert_node(fromId, short_name, long_name)
         else:
             print(f"Non-text message or empty text received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {portnum}")
     elif 'encrypted' in packet:
@@ -190,6 +206,8 @@ def on_receive(packet, interface):
         store_message(message_id, fromId, toId, encrypted_text, timestamp, channel)
     else:
         print(f"Unknown message format: {packet}")
+
+
         
 def mark_message_as_read(message_id):
     conn = sqlite3.connect('messages.db')
