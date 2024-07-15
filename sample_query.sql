@@ -14,5 +14,5 @@ SELECT
     datetime(telemetry.timestamp, 'unixepoch') AS datetime
 FROM telemetry 
 JOIN nodes ON telemetry.node_id = nodes.node_id
-WHERE nodes.short_name = 'node1';
+WHERE nodes.short_name = '';
 

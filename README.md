@@ -2,13 +2,39 @@
 
 This is just proof of concept.
 
+## Description
+
+Basic setup of `SQLITE3` database for storing some data:
+
+- Environment metrics (Temperature)
+- Messages (Will keep track of all messages in default, and encrypted channels, also direct messages)
+- Nodes (will try to make updated database of visible nodes)
+- Positions (will keep track of all possitions packet recieved)
+- Telemetry (basic telemetry received from nodes)
+- Traceroute (WORK IN PROGRESS)
+
 ## Run 
 
 ```bash
 python3 get-messages-to-db.py
 ```
 
-Sample Query to DB to list telemetry for specific node
+
+## Query database
+
+```bash
+sqlite3 messages.db
+```
+
+### List tables
+
+```shell
+sqlite> .tables
+environment  nodes        routing      traceroute 
+messages     positions    telemetry 
+```
+
+### Sample Query to DB to list telemetry for specific node
 ```sql
 -- SQLite
 SELECT 
