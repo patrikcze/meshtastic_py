@@ -286,6 +286,16 @@ def get_unread_messages():
     conn.close()
     return messages
 
+def print_meshtastic_banner():
+    banner = """
+         ███   ███      ████████ ███████  ██     ███████████   ███      ███████ █████████   ███ ███████ 
+       ████  ██████     ██       ███      ██     ██   ███     ██████    ███   ██    ██     ███ ███    ██
+      ████  ███   ███   ███████   ███████ █████████   ███   ███   ███    ███████    ██   ████  ██       
+    ████  ████     ███  ██             ██ ██     ██   ███  ███     ███  ██    ██    ██  ████   ███    ██
+    ███   ██         ██ ████████ ████████ ██     ██   ███ ███        ██ ████████    ██ ███      ████████
+    Save messages from Meshtastic to a SQLite database.
+    """
+    print(banner)
 # Main function
 def main():
     # Initialize the database
@@ -296,7 +306,7 @@ def main():
 
     # Subscribe to messages
     pub.subscribe(on_receive, "meshtastic.receive")
-
+   
     print("Listening for messages... Press Ctrl+C to stop.")
     try:
         while True:
@@ -306,4 +316,5 @@ def main():
         print("Stopping message listener...")
 
 if __name__ == "__main__":
+    print_meshtastic_banner()
     main()

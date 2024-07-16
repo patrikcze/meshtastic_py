@@ -3,6 +3,8 @@
 This is just proof of concept.
 Script uses default Serial connection. 
 
+![](./images/screenshot.png)
+
 Really basic setup :
 ```python
     # Initialize the serial interface
