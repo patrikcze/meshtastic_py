@@ -1,7 +1,17 @@
-# Basic script to store Meshtastic packet data to SQLITE3 db
+# Simple Python script to parse and save Meshtastic Packets to sqlite3 database
 
-This is just proof of concept.
-Script uses default Serial connection. 
+This is just proof of concept. 
+Possibly nothing new and nothing special. 🗼📟📡
+Script uses default Serial connection to connect to your device. 
+Use regular microUSB or USB-C cable, connect to computer (drivers have to be installed). 
+
+Tested with: 
+
+- ✅ T-Echo
+- ✅ Lilygo T3-S3
+- ✅ RAK4631 WISBlock 19003
+
+Feel free to do whatever you want with this script. 
 
 ![](./images/screenshot.png)
 
