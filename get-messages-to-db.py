@@ -174,7 +174,7 @@ def on_receive(packet, interface):
         upsert_node(toId, to_short_name, to_long_name, to_hw_model, to_last_heard)
 
         if portnum == 'TEXT_MESSAGE_APP' and text:
-            print(f"Plain text message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {text}")
+            print(f"✉️  Plain text message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {text}")
             store_message(message_id, fromId, toId, text, timestamp, channel)
         elif portnum == 'TELEMETRY_APP':
             telemetry = packet['decoded'].get('telemetry', {})
@@ -184,7 +184,7 @@ def on_receive(packet, interface):
             air_util_tx = telemetry.get('deviceMetrics', {}).get('airUtilTx', None)
             uptime_seconds = telemetry.get('deviceMetrics', {}).get('uptimeSeconds', None)
             
-            print(f"Telemetry data received from {from_short_name} ({fromId}): battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
+            print(f"📊 Telemetry data received from {from_short_name} ({fromId}): battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
             store_telemetry(fromId, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp)
 
             # Check if environmental data is present in telemetry
@@ -195,7 +195,7 @@ def on_receive(packet, interface):
                 barometric_pressure = environment_metrics.get('barometricPressure', None)
                 iaq = environment_metrics.get('iaq', None)  # Assuming IAQ (Indoor Air Quality) might be included
 
-                print(f"Environment data found in telemetry from {from_short_name} ({fromId}): temperature={temperature}, relative_humidity={relative_humidity}, barometric_pressure={barometric_pressure}, iaq={iaq}")
+                print(f"🌲 Environment data found in telemetry from {from_short_name} ({fromId}): temperature={temperature}, relative_humidity={relative_humidity}, barometric_pressure={barometric_pressure}, iaq={iaq}")
                 store_environment(fromId, temperature, relative_humidity, barometric_pressure, iaq, timestamp)
 
         elif portnum == 'POSITION_APP':
@@ -206,7 +206,7 @@ def on_receive(packet, interface):
             time = position.get('time', None)
             sats_in_view = position.get('satsInView', None)
             
-            print(f"Position data received from {from_short_name} ({fromId}): latitude={latitude}, longitude={longitude}, altitude={altitude}, time={time}, sats_in_view={sats_in_view}")
+            print(f"📌 Position data received from {from_short_name} ({fromId}): latitude={latitude}, longitude={longitude}, altitude={altitude}, time={time}, sats_in_view={sats_in_view}")
             store_position(fromId, latitude, longitude, altitude, time, sats_in_view, timestamp)
         elif portnum == 'ENVIRONMENTAL_MEASUREMENT_APP':
             environment = packet['decoded'].get('environment', {})
@@ -215,7 +215,7 @@ def on_receive(packet, interface):
             bar = environment.get('bar', None)
             iaq = environment.get('iaq', None)
 
-            print(f"Environment data received from {from_short_name} ({fromId}): temperature={temperature}, humidity={humidity}, bar={bar}, iaq={iaq}")
+            print(f"🌲 Environment data received from {from_short_name} ({fromId}): temperature={temperature}, humidity={humidity}, bar={bar}, iaq={iaq}")
             store_environment(fromId, temperature, humidity, bar, iaq, timestamp)
         elif portnum == 'NODEINFO_APP':
             node_info = packet['decoded'].get('user', {})
@@ -231,18 +231,18 @@ def on_receive(packet, interface):
             air_util_tx = device_metrics.get('airUtilTx', None)
             uptime_seconds = device_metrics.get('uptimeSeconds', None)
             
-            print(f"Node info received from {from_short_name} ({fromId}): long_name={long_name}, short_name={short_name}, hw_model={hw_model}, snr={snr}, last_heard={last_heard}, battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
+            print(f"🕸️ Node info received from {from_short_name} ({fromId}): long_name={long_name}, short_name={short_name}, hw_model={hw_model}, snr={snr}, last_heard={last_heard}, battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
             upsert_node(fromId, short_name, long_name, hw_model, last_heard)
         elif portnum == 'TRACEROUTE_APP':
             hops = packet['decoded'].get('hops', [])
-            print(f"Traceroute data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): hops={hops}")
+            print(f"🧭 Traceroute data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): hops={hops}")
             store_traceroute(fromId, toId, str(hops), timestamp)
         elif portnum == 'ROUTING_APP':
             routes = packet['decoded'].get('routes', [])
-            print(f"Routing data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): routes={routes}")
+            print(f"🛣️ Routing data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): routes={routes}")
             store_routing(fromId, toId, str(routes), timestamp)
         else:
-            print(f"Non-text message or empty text received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {portnum}")
+            print(f"🗞️ Non-text message or empty text received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {portnum}")
     elif 'encrypted' in packet:
         encrypted_text = packet.get('encrypted')
         message_id = packet['id']  # Unique message ID
@@ -264,7 +264,7 @@ def on_receive(packet, interface):
         upsert_node(fromId, from_short_name, from_long_name, from_hw_model, from_last_heard)
         upsert_node(toId, to_short_name, to_long_name, to_hw_model, to_last_heard)
         
-        print(f"Encrypted message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {encrypted_text}")
+        print(f"📧 Encrypted message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {encrypted_text}")
         store_message(message_id, fromId, toId, encrypted_text, timestamp, channel)
     else:
         print(f"Unknown message format: {packet}")
