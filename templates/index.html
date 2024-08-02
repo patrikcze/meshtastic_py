@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Meshtastic Data Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <h1>Meshtastic Data Dashboard</h1>
+    <div id="messages-chart"></div>
+    <div id="telemetry-chart"></div>
+    <div id="positions-chart"></div>
+    <div id="environment-chart"></div>
+
+    <script>
+        var socket = io();
+
+        socket.on('connect', function() {
+            console.log('Connected to the server');
+            socket.emit('fetch_data');
+        });
+
+        socket.on('update_data', function(data) {
+            console.log('Data received:', data);
+
+            try {
+                if (typeof data === 'string') {
+                    data = JSON.parse(data); 
+                }
+            } catch (e) {
+                console.error('Error parsing JSON data:', e);
+                return;
+            }
+
+            console.log('Parsed Data:', data);
+
+            var messages = data.messages || [];
+            var telemetry = data.telemetry || [];
+            var positions = data.positions || [];
+            var environment = data.environment || [];
+
+            console.log('Messages:', messages);
+            console.log('Telemetry:', telemetry);
+            console.log('Positions:', positions);
+            console.log('Environment:', environment);
+
+            function createChart(divId, traceData) {
+                try {
+                    Plotly.newPlot(divId, [traceData]);
+                } catch (e) {
+                    console.error(`Error generating chart for ${divId}:`, e);
+                }
+            }
+
+            if (messages.length > 0) {
+                var messages_trace = {
+                    x: messages.map(d => new Date(d.timestamp * 1000)),
+                    y: messages.map(d => d.message),
+                    mode: 'lines',
+                    type: 'scatter'
+                };
+                createChart('messages-chart', messages_trace);
+            }
+
+            if (telemetry.length > 0) {
+                var telemetry_trace = {
+                    x: telemetry.map(d => new Date(d.timestamp * 1000)),
+                    y: telemetry.map(d => d.battery_level),
+                    mode: 'lines',
+                    type: 'scatter',
+                    name: 'Battery Level'
+                };
+                createChart('telemetry-chart', telemetry_trace);
+            }
+
+            if (positions.length > 0) {
+                var positions_trace = {
+                    x: positions.map(d => d.latitude),
+                    y: positions.map(d => d.longitude),
+                    mode: 'markers',
+                    type: 'scatter',
+                    text: positions.map(d => `Altitude: ${d.altitude}, Time: ${d.time}`),
+                    marker: { size: 10 }
+                };
+                createChart('positions-chart', positions_trace);
+            }
+
+            if (environment.length > 0) {
+                var environment_trace = {
+                    x: environment.map(d => new Date(d.timestamp * 1000)),
+                    y: environment.map(d => d.temperature),
+                    mode: 'lines',
+                    type: 'scatter',
+                    name: 'Temperature'
+                };
+                createChart('environment-chart', environment_trace);
+            }
+        });
+    </script>
+</body>
+</html>
