@@ -5,13 +5,40 @@
     <title>Meshtastic Data Dashboard</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            font-size: 2em;
+            margin: 20px;
+        }
+        #charts {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .chart {
+            width: 80%;
+            max-width: 1000px;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
     <h1>Meshtastic Data Dashboard</h1>
-    <div id="messages-chart"></div>
-    <div id="telemetry-chart"></div>
-    <div id="positions-chart"></div>
-    <div id="environment-chart"></div>
+    <div id="charts">
+        <div id="temperature-chart" class="chart"></div>
+        <div id="humidity-chart" class="chart"></div>
+        <div id="bar-chart" class="chart"></div>
+        <div id="iaq-chart" class="chart"></div>
+    </div>
 
     <script>
         var socket = io();
@@ -35,67 +62,47 @@
 
             console.log('Parsed Data:', data);
 
-            var messages = data.messages || [];
-            var telemetry = data.telemetry || [];
-            var positions = data.positions || [];
             var environment = data.environment || [];
 
-            console.log('Messages:', messages);
-            console.log('Telemetry:', telemetry);
-            console.log('Positions:', positions);
             console.log('Environment:', environment);
 
-            function createChart(divId, traceData) {
-                try {
-                    Plotly.newPlot(divId, [traceData]);
-                } catch (e) {
-                    console.error(`Error generating chart for ${divId}:`, e);
-                }
+            function createTraces(data, key) {
+                var traces = {};
+                data.forEach(d => {
+                    if (!traces[d.node_id]) {
+                        traces[d.node_id] = {
+                            x: [],
+                            y: [],
+                            name: d.long_name,
+                            mode: 'lines+markers',
+                            type: 'scatter'
+                        };
+                    }
+                    traces[d.node_id].x.push(new Date(d.timestamp * 1000));
+                    traces[d.node_id].y.push(d[key]);
+                });
+                return Object.values(traces);
             }
 
-            if (messages.length > 0) {
-                var messages_trace = {
-                    x: messages.map(d => new Date(d.timestamp * 1000)),
-                    y: messages.map(d => d.message),
-                    mode: 'lines',
-                    type: 'scatter'
+            function createChart(divId, traces, title, yAxisTitle) {
+                var layout = {
+                    title: title,
+                    xaxis: { title: 'Timestamp' },
+                    yaxis: { title: yAxisTitle },
+                    font: { family: 'Helvetica Neue, Helvetica, Arial, sans-serif' }
                 };
-                createChart('messages-chart', messages_trace);
+                Plotly.newPlot(divId, traces, layout);
             }
 
-            if (telemetry.length > 0) {
-                var telemetry_trace = {
-                    x: telemetry.map(d => new Date(d.timestamp * 1000)),
-                    y: telemetry.map(d => d.battery_level),
-                    mode: 'lines',
-                    type: 'scatter',
-                    name: 'Battery Level'
-                };
-                createChart('telemetry-chart', telemetry_trace);
-            }
+            var temperature_traces = createTraces(environment, 'temperature');
+            var humidity_traces = createTraces(environment, 'humidity');
+            var bar_traces = createTraces(environment, 'bar');
+            var iaq_traces = createTraces(environment, 'iaq');
 
-            if (positions.length > 0) {
-                var positions_trace = {
-                    x: positions.map(d => d.latitude),
-                    y: positions.map(d => d.longitude),
-                    mode: 'markers',
-                    type: 'scatter',
-                    text: positions.map(d => `Altitude: ${d.altitude}, Time: ${d.time}`),
-                    marker: { size: 10 }
-                };
-                createChart('positions-chart', positions_trace);
-            }
-
-            if (environment.length > 0) {
-                var environment_trace = {
-                    x: environment.map(d => new Date(d.timestamp * 1000)),
-                    y: environment.map(d => d.temperature),
-                    mode: 'lines',
-                    type: 'scatter',
-                    name: 'Temperature'
-                };
-                createChart('environment-chart', environment_trace);
-            }
+            createChart('temperature-chart', temperature_traces, 'Temperature Over Time', 'Temperature (°C)');
+            createChart('humidity-chart', humidity_traces, 'Humidity Over Time', 'Humidity (%)');
+            createChart('bar-chart', bar_traces, 'Barometric Pressure Over Time', 'Pressure (hPa)');
+            createChart('iaq-chart', iaq_traces, 'IAQ Over Time', 'IAQ');
         });
     </script>
 </body>

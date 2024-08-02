@@ -9,33 +9,33 @@ import numpy as np
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Function to query data from the database
 def query_db(query, params=()):
     conn = sqlite3.connect('messages.db')
     df = pd.read_sql_query(query, conn, params=params)
     conn.close()
     return df
 
-# Convert DataFrame to JSON-compatible dict
 def df_to_json(df):
     df = df.replace({np.nan: None, np.inf: None, -np.inf: None})
     return json.loads(df.to_json(orient='records', default_handler=str))
 
-# Route for the main page
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Function to fetch data and send updates via SocketIO
 @socketio.on('fetch_data')
 def handle_fetch_data():
     try:
         messages_df = query_db('SELECT * FROM messages')
         telemetry_df = query_db('SELECT * FROM telemetry')
         positions_df = query_db('SELECT * FROM positions')
-        environment_df = query_db('SELECT * FROM environment')
+        environment_df = query_db('''
+            SELECT e.*, n.long_name
+            FROM environment e
+            JOIN nodes n ON e.node_id = n.node_id
+        ''')
 
         data = {
             'messages': df_to_json(messages_df),
