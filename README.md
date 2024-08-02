@@ -87,3 +87,10 @@ WHERE nodes.short_name = 'node1';
 
 
 ```
+# app.py
+
+Added new python code, to render template HTML and generate some simple charts.
+At this step just basic drawing of environment metrics. Temperature, humidity.
+Already collected and stored into `sqlite3` database. 
+
+![Example](./images/dashboard_example.png)
