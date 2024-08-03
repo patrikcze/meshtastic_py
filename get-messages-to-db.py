@@ -111,7 +111,6 @@ def store_environment(node_id, temperature, relative_humidity, barometric_pressu
     conn.commit()
     conn.close()
 
-
 def store_traceroute(from_node, to_node, hops, timestamp):
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
@@ -131,6 +130,9 @@ def store_routing(from_node, to_node, routes, timestamp):
     conn.close()
 
 def upsert_node(node_id, short_name, long_name, hw_model, last_heard):
+    if node_id is None:
+        print(f"Skipping upsert for node with None node_id: {short_name}, {long_name}, {hw_model}, {last_heard}")
+        return
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
     c.execute('''INSERT INTO nodes (node_id, short_name, long_name, hw_model, last_heard)
@@ -146,9 +148,6 @@ def on_receive(packet, interface):
     """Callback function to handle received messages."""
     timestamp = int(time_module.time())
 
-    # Log the raw packet for debugging purposes
-    # print(f"Received packet: {packet}")
-
     if 'decoded' in packet:
         portnum = packet['decoded'].get('portnum')
         text = packet['decoded'].get('text')
@@ -162,12 +161,21 @@ def on_receive(packet, interface):
         from_short_name = from_node_info.get('user', {}).get('shortName', '')
         from_long_name = from_node_info.get('user', {}).get('longName', '')
         from_hw_model = from_node_info.get('user', {}).get('hwModel', '')
-        from_last_heard = from_node_info.get('lastHeard', 0)
+        from_last_heard = from_node_info.get('lastHeard')
+        if from_last_heard is None:
+            from_last_heard = 0
+
         to_node_info = interface.nodes.get(toId, {})
         to_short_name = to_node_info.get('user', {}).get('shortName', '')
         to_long_name = to_node_info.get('user', {}).get('longName', '')
         to_hw_model = to_node_info.get('user', {}).get('hwModel', '')
-        to_last_heard = to_node_info.get('lastHeard', 0)
+        to_last_heard = to_node_info.get('lastHeard')
+        if to_last_heard is None:
+            to_last_heard = 0
+
+        # Debugging information
+        #print(f"From node: {fromId}, {from_short_name}, {from_long_name}, {from_hw_model}, {from_last_heard}")
+        #print(f"To node: {toId}, {to_short_name}, {to_long_name}, {to_hw_model}, {to_last_heard}")
 
         # Upsert node information
         upsert_node(fromId, from_short_name, from_long_name, from_hw_model, from_last_heard)
@@ -239,7 +247,7 @@ def on_receive(packet, interface):
             store_traceroute(fromId, toId, str(hops), timestamp)
         elif portnum == 'ROUTING_APP':
             routes = packet['decoded'].get('routes', [])
-            print(f"🛣️ Routing data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): routes={routes}")
+            print(f"🚏 Routing data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): routes={routes}")
             store_routing(fromId, toId, str(routes), timestamp)
         else:
             print(f"🗞️ Non-text message or empty text received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {portnum}")
@@ -267,7 +275,7 @@ def on_receive(packet, interface):
         print(f"📧 Encrypted message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {encrypted_text}")
         store_message(message_id, fromId, toId, encrypted_text, timestamp, channel)
     else:
-        print(f"Unknown message format: {packet}")
+        print(f"🚨 Unknown message format: {packet}")
 
 # Mark message as read
 def mark_message_as_read(message_id):
