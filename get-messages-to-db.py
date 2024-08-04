@@ -59,7 +59,9 @@ def initialize_db():
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     from_node TEXT,
                     to_node TEXT,
-                    hops TEXT,
+                    hop_id INTEGER,
+                    hop_node TEXT,
+                    hop_snr REAL,
                     timestamp INTEGER
                 )''')
     c.execute('''CREATE TABLE IF NOT EXISTS routing (
@@ -114,9 +116,14 @@ def store_environment(node_id, temperature, relative_humidity, barometric_pressu
 def store_traceroute(from_node, to_node, hops, timestamp):
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
-    c.execute('''INSERT INTO traceroute (from_node, to_node, hops, timestamp)
-                 VALUES (?, ?, ?, ?)''', 
-              (from_node, to_node, hops, timestamp))
+    hop_id = 0
+    for hop in hops:
+        hop_id += 1
+        hop_node = hop.get('nodeId')
+        hop_snr = hop.get('snr')
+        c.execute('''INSERT INTO traceroute (from_node, to_node, hop_id, hop_node, hop_snr, timestamp)
+                     VALUES (?, ?, ?, ?, ?, ?)''', 
+                  (from_node, to_node, hop_id, hop_node, hop_snr, timestamp))
     conn.commit()
     conn.close()
 
@@ -147,6 +154,9 @@ def upsert_node(node_id, short_name, long_name, hw_model, last_heard):
 def on_receive(packet, interface):
     """Callback function to handle received messages."""
     timestamp = int(time_module.time())
+
+    # Debug print statement to log the entire packet
+    # print(f"Received packet: {packet}")
 
     if 'decoded' in packet:
         portnum = packet['decoded'].get('portnum')
@@ -244,7 +254,7 @@ def on_receive(packet, interface):
         elif portnum == 'TRACEROUTE_APP':
             hops = packet['decoded'].get('hops', [])
             print(f"🧭 Traceroute data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): hops={hops}")
-            store_traceroute(fromId, toId, str(hops), timestamp)
+            store_traceroute(fromId, toId, hops, timestamp)
         elif portnum == 'ROUTING_APP':
             routes = packet['decoded'].get('routes', [])
             print(f"🚏 Routing data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): routes={routes}")
