@@ -33,6 +33,13 @@ pip3 install meshtastic
 pip3 install pytap2
 ```
 
+Make sure pip and meshtastic is fully updated:
+
+```shell
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade meshtastic
+```
+
 ## Description
 
 Basic setup of `SQLITE3` database for storing some data:
@@ -87,10 +94,17 @@ WHERE nodes.short_name = 'node1';
 
 
 ```
-# app.py
+## app.py
 
 Added new python code, to render template HTML and generate some simple charts.
 At this step just basic drawing of environment metrics. Temperature, humidity.
 Already collected and stored into `sqlite3` database. 
 
 ![Example](./images/dashboard_example.png)
+
+
+## pong.py
+
+Small app which will do the same like previous one, but it will try to pong you back when you send message `Ping` or `Alive?` to the node. 
+Also if you send the `Ping` command the node will try to traceroute sender. 
+

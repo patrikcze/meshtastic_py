@@ -1,9 +1,11 @@
 import meshtastic
 import meshtastic.serial_interface
 from meshtastic import BROADCAST_ADDR
+from meshtastic.protobuf import mesh_pb2, portnums_pb2
 from pubsub import pub
 import time as time_module
 import datetime
+from google.protobuf.json_format import MessageToDict
 
 # Function to handle received messages
 def on_receive(packet, interface):
@@ -11,7 +13,7 @@ def on_receive(packet, interface):
     timestamp = int(time_module.time())
 
     # Debug print statement to log the entire packet
-    # print(f"Received packet: {packet}")
+    print(f"Received packet: {packet}")
 
     if 'decoded' in packet:
         portnum = packet['decoded'].get('portnum')
@@ -23,9 +25,10 @@ def on_receive(packet, interface):
         # Check if the message is 'Ping'
         if text == 'Ping':
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"Received 'Ping' from {fromId}. Sending 'pong'.")
+            print(f"Received 'Ping' from {fromId}. Sending 'pong' and trace route.")
             reply_text = f"[Automatic] 🏓 pong to {fromId} at {current_time}."
             send_message(interface, fromId, reply_text, channel, toId)
+            send_trace_route(interface, fromId, hop_limit=5, channelIndex=channel)
         
         # Check if the message is 'Alive?'
         elif text == 'Alive?':
@@ -40,11 +43,39 @@ def send_message(interface, fromId, text, channel, toId):
     if toId == '^all':
         # Send to the same channel it was received from
         interface.sendText(text, destinationId=BROADCAST_ADDR, wantAck=True, channelIndex=channel)
-        print(f"Sent message to all nodes in channel {channel}.")
     else:
         # Send directly to the sender
         interface.sendText(text, destinationId=fromId, wantAck=True)
-        print(f"Sent message to {fromId}.")
+
+def send_trace_route(interface, dest, hop_limit, channelIndex=0):
+    """Send the trace route"""
+    r = mesh_pb2.RouteDiscovery()
+    # Set the hop limit if needed; assuming it needs to be set in the message
+    # r.hopLimit = hop_limit  # Uncomment if RouteDiscovery has a hopLimit field
+    
+    interface.sendData(
+        r,
+        destinationId=dest,
+        portNum=portnums_pb2.PortNum.TRACEROUTE_APP,
+        wantResponse=True,
+        onResponse=on_response_trace_route,
+        channelIndex=channelIndex,
+        # hopLimit=hop_limit,  # Removed this argument since sendData doesn't accept it
+    )
+
+def on_response_trace_route(p):
+    """on response for trace route"""
+    routeDiscovery = mesh_pb2.RouteDiscovery()
+    routeDiscovery.ParseFromString(p["decoded"]["payload"])
+    asDict = MessageToDict(routeDiscovery)
+
+    print("Route traced:")
+    routeStr = f'{p["to"]:08x}'
+    if "route" in asDict:
+        for nodeNum in asDict["route"]:
+            routeStr += " --> " + f"{nodeNum:08x}"
+    routeStr += " --> " + f'{p["from"]:08x}'
+    print(routeStr)
 
 # Function to initialize Meshtastic and start listening for messages
 def main():
