@@ -13,7 +13,7 @@ def on_receive(packet, interface):
     timestamp = int(time_module.time())
 
     # Debug print statement to log the entire packet
-    print(f"Received packet: {packet}")
+    # print(f"Received packet: {packet}")
 
     if 'decoded' in packet:
         portnum = packet['decoded'].get('portnum')

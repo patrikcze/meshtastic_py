@@ -108,3 +108,4 @@ Already collected and stored into `sqlite3` database.
 Small app which will do the same like previous one, but it will try to pong you back when you send message `Ping` or `Alive?` to the node. 
 Also if you send the `Ping` command the node will try to traceroute sender. 
 
+![Example](./images/pongpythonscreenshot.png)
