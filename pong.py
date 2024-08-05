@@ -26,14 +26,14 @@ def on_receive(packet, interface):
         if text == 'Ping':
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print(f"Received 'Ping' from {fromId}. Sending 'pong' and trace route.")
-            reply_text = f"[Automatic] 🏓 pong to {fromId} at {current_time}."
+            reply_text = f"[Automatic Reply] 🏓 pong to {fromId} at {current_time}."
             send_message(interface, fromId, reply_text, channel, toId)
-            send_trace_route(interface, fromId, hop_limit=5, channelIndex=channel)
+            send_trace_route(interface, fromId, hop_limit=3, channelIndex=channel)
         
         # Check if the message is 'Alive?'
         elif text == 'Alive?':
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            reply_text = f"[Automatic] Yes I'm alive ⏱️ {current_time}."
+            reply_text = f"[Automatic Reply] Yes I'm alive ⏱️ {current_time}."
             print(f"Received 'alive?' from {fromId}. Sending '{reply_text}'.")
             send_message(interface, fromId, reply_text, channel, toId)
 
