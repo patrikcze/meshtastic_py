@@ -5,6 +5,8 @@ import time as time_module
 import sqlite3
 import json
 import threading
+import logging
+import serial
 
 # Initialize the database
 def initialize_db():
@@ -91,27 +93,41 @@ def print_meshtastic_banner():
     print(banner)
 
 # Function to manage the serial connection
-def manage_serial_connection():
+def manage_serial_connection(devPath=None):
+    interface = None
     while True:
         try:
-            interface = meshtastic.serial_interface.SerialInterface()
-            pub.subscribe(on_receive, "meshtastic.receive")
-            print("Serial connection established. Listening for messages... Press Ctrl+C to stop.")
+            if interface is None:  # If the interface is not initialized or closed, initialize it
+                print(f"Attempting to connect to the serial interface on {devPath}...")
+                interface = meshtastic.serial_interface.SerialInterface(devPath=devPath)
+                pub.subscribe(on_receive, "meshtastic.receive")
+                print("Serial connection established. Listening for messages... Press Ctrl+C to stop.")
             
-            # Keep the script running to listen for messages
-            while True:
-                time_module.sleep(1)
+            time_module.sleep(1)  # Sleep to prevent busy-waiting
+            
+        except serial.SerialException as e:
+            print(f"Serial connection error: {e}. Reconnecting in 5 seconds...")
+            if interface:
+                interface.close()  # Ensure the interface is closed before trying to reconnect
+                interface = None
+            time_module.sleep(5)
 
         except Exception as e:
-            print(f"Error: {e}. Reconnecting in 5 seconds...")
+            print(f"Unexpected error: {e}. Reconnecting in 5 seconds...")
+            if interface:
+                interface.close()  # Ensure the interface is closed before trying to reconnect
+                interface = None
             time_module.sleep(5)
 
 def main():
     # Initialize the database
     initialize_db()
 
+    # Specify the device path for your Meshtastic device
+    device_path = "/dev/cu.usbmodem34B7DA5AFD801"  # Replace with your actual device path
+
     # Start the serial connection management in a separate thread
-    serial_thread = threading.Thread(target=manage_serial_connection)
+    serial_thread = threading.Thread(target=manage_serial_connection, args=(device_path,))
     serial_thread.start()
 
     print_meshtastic_banner()
