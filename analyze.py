@@ -3,6 +3,8 @@ import meshtastic.serial_interface
 from pubsub import pub
 import time as time_module
 import sqlite3
+import json
+import threading
 
 # Initialize the database
 def initialize_db():
@@ -88,21 +90,34 @@ def print_meshtastic_banner():
     """
     print(banner)
 
-# Main function
+# Function to manage the serial connection
+def manage_serial_connection():
+    while True:
+        try:
+            interface = meshtastic.serial_interface.SerialInterface()
+            pub.subscribe(on_receive, "meshtastic.receive")
+            print("Serial connection established. Listening for messages... Press Ctrl+C to stop.")
+            
+            # Keep the script running to listen for messages
+            while True:
+                time_module.sleep(1)
+
+        except Exception as e:
+            print(f"Error: {e}. Reconnecting in 5 seconds...")
+            time_module.sleep(5)
+
 def main():
     # Initialize the database
     initialize_db()
 
-    # Initialize the serial interface
-    interface = meshtastic.serial_interface.SerialInterface()
+    # Start the serial connection management in a separate thread
+    serial_thread = threading.Thread(target=manage_serial_connection)
+    serial_thread.start()
 
-    # Subscribe to messages
-    pub.subscribe(on_receive, "meshtastic.receive")
+    print_meshtastic_banner()
 
-    print("Listening for messages... Press Ctrl+C to stop.")
     try:
         while True:
-            # Keep the script running to listen for messages
             time_module.sleep(1)
     except KeyboardInterrupt:
         print("Stopping message listener...")
