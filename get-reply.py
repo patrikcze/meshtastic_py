@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import meshtastic
 import meshtastic.serial_interface
 from meshtastic import BROADCAST_ADDR
@@ -206,6 +205,15 @@ def on_receive(packet, interface):
         fromId = packet.get('fromId')
         toId = packet.get('toId')
         channel = packet.get('channel', 0)  # Default to 0 if channel is not found
+        hop_limit = packet.get('hopLimit', 0)
+        hop_start = packet.get('hopStart', 0)
+        rx_time = packet.get('rxTime', 0)
+
+        # Calculate hops away
+        hops_away = hop_start - hop_limit
+
+        # Convert rx_time to human-readable format
+        rx_time_human = datetime.datetime.fromtimestamp(rx_time).strftime("%Y-%m-%d %H:%M:%S")
 
         # Get node information
         from_node_info = interface.nodes.get(fromId, {})
@@ -228,7 +236,11 @@ def on_receive(packet, interface):
         if text == 'Ping':
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print(f"Received 'Ping' from {fromId}. Sending 'pong' and trace route.")
-            reply_text = f"[Automatic Reply] 🏓 pong to {fromId} at {current_time}."
+            reply_text = (
+                f"[Automatic Reply] 🏓 pong to {fromId} at {current_time}.\n"
+                f"Hops away: {hops_away}\n"
+                f"Receive time: {rx_time_human}"
+            )
             try:
                 send_message(interface, fromId, reply_text, channel, toId)
                 send_trace_route(interface, fromId, hop_limit=3, channelIndex=channel)
@@ -374,4 +386,3 @@ def main():
 if __name__ == "__main__":
     print_meshtastic_banner()
     main()
-
