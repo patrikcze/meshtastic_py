@@ -268,6 +268,29 @@ def on_receive(packet, interface):
         if portnum == 'TEXT_MESSAGE_APP' and text:
             print(f"✉️  Plain text message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {text}")
             store_message(message_id, fromId, toId, text, timestamp, channel)
+        # Respond to specific messages
+        if text == 'Ping':
+            current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(f"Received 'Ping' from {fromId}. Sending 'pong' and trace route.")
+            reply_text = (
+                f"[Automatic Reply]\n🏓 pong to {fromId} at {current_time}.\n"
+                f"Hops away: {hops_away}\n"
+                f"Receive time: {rx_time_human}"
+            )
+            try:
+                send_message(interface, fromId, reply_text, channel, toId)
+                send_trace_route(interface, fromId, hop_limit=3, channelIndex=channel)
+            except Exception as e:
+                print(f"Error while sending response or trace route: {e}")
+
+        elif text == 'Alive?':
+            current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            reply_text = f"[Automatic Reply] Yes I'm alive ⏱️ {current_time}."
+            print(f"Received 'Alive?' from {fromId}. Sending '{reply_text}'.")
+            try:
+                send_message(interface, fromId, reply_text, channel, toId)
+            except Exception as e:
+                print(f"Error while sending 'Alive?' response: {e}")
 
         elif portnum == 'TELEMETRY_APP':
             telemetry = packet['decoded'].get('telemetry', {})
