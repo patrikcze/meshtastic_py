@@ -220,7 +220,7 @@ def on_receive(packet, interface):
     timestamp = int(time_module.time())
 
     # Debug print statement to log the entire packet
-    print(f"Received packet: {packet}")
+    # print(f"Received packet: {packet}")
 
     # Initialize node_number variables to None
     from_node_number = None
