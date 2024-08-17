@@ -332,7 +332,7 @@ def on_receive(packet, interface):
         message_id = packet['id']  # Unique message ID
         fromId = packet.get('fromId')
         toId = packet.get('toId')
-        channel = packet.get('channel', -1)  # Default to -1 if channel is not found
+        channel = packet.get('channel', 0)  # Default to 0 if channel is not found
         
         from_node_info = interface.nodes.get(fromId, {})
         from_short_name = from_node_info.get('user', {}).get('shortName', '')
