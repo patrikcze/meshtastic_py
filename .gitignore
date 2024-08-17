@@ -129,3 +129,6 @@ messages.db
 traffic_analysis.db
 *.db
 
+# Ignore generated map html
+mesh_network_map.html
+
