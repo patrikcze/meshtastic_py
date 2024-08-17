@@ -177,6 +177,9 @@ ORDER BY
 
 Will generate `mesh_network_map.html` with positions from actual nodes and their neigbors. It is using data collected in table `neigbors` and using last known position from table `positions`. 
 
+**Example**:
+![Example](./images/neighbors.png)
+
 ```sql
 WITH LatestPositions AS (
     SELECT 
