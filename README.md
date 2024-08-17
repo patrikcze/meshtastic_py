@@ -172,3 +172,45 @@ ORDER BY
     n.long_name, european_time ASC;
 
 ```
+
+## generate_googlemap.py
+
+Will generate `mesh_network_map.html` with positions from actual nodes and their neigbors. It is using data collected in table `neigbors` and using last known position from table `positions`. 
+
+**Example**:
+![Example](./images/neighbors.png)
+
+```sql
+WITH LatestPositions AS (
+    SELECT 
+        p.node_id,
+        p.latitude,
+        p.longitude,
+        p.altitude,
+        datetime(p.timestamp, 'unixepoch', 'localtime') AS last_position_time,
+        ROW_NUMBER() OVER (PARTITION BY p.node_id ORDER BY p.timestamp DESC) AS rn
+    FROM 
+        positions p
+)
+SELECT 
+    n1.long_name AS node_long_name,
+    n2.long_name AS neighbor_long_name,
+    lp1.latitude AS node_latitude,
+    lp1.longitude AS node_longitude,
+    lp2.latitude AS neighbor_latitude,
+    lp2.longitude AS neighbor_longitude
+FROM 
+    neighbors
+JOIN 
+    nodes n1 ON neighbors.node_id = n1.node_number
+LEFT JOIN 
+    nodes n2 ON neighbors.neighbor_node_id = n2.node_number
+LEFT JOIN 
+    LatestPositions lp1 ON n1.user_id = lp1.node_id AND lp1.rn = 1
+LEFT JOIN 
+    LatestPositions lp2 ON n2.user_id = lp2.node_id AND lp2.rn = 1
+GROUP BY 
+    n1.long_name, n2.long_name
+ORDER BY 
+    n1.long_name;
+```
