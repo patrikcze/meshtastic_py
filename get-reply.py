@@ -149,19 +149,32 @@ def store_routing(from_node, to_node, routes, timestamp):
     conn.commit()
     conn.close()
 
-def upsert_node(node_id, short_name, long_name, hw_model, last_heard):
-    if node_id is None:
-        print(f"Skipping upsert for node with None node_id: {short_name}, {long_name}, {hw_model}, {last_heard}")
+def upsert_node(user_id, node_number, short_name, long_name, hw_model, last_heard):
+    if user_id is None:
+        print(f"Skipping upsert for node with None user_id: {short_name}, {long_name}, {hw_model}, {last_heard}")
         return
     conn = sqlite3.connect('messages.db')
     c = conn.cursor()
-    c.execute('''INSERT INTO nodes (node_id, short_name, long_name, hw_model, last_heard)
-                 VALUES (?, ?, ?, ?, ?)
-                 ON CONFLICT(node_id) DO UPDATE SET
-                 short_name=excluded.short_name, long_name=excluded.long_name, hw_model=excluded.hw_model, last_heard=excluded.last_heard''', 
-              (node_id, short_name, long_name, hw_model, last_heard))
+    c.execute('''INSERT INTO nodes (user_id, node_number, short_name, long_name, hw_model, last_heard)
+                 VALUES (?, ?, ?, ?, ?, ?)
+                 ON CONFLICT(user_id) DO UPDATE SET
+                 node_number=excluded.node_number, short_name=excluded.short_name,
+                 long_name=excluded.long_name, hw_model=excluded.hw_model,
+                 last_heard=excluded.last_heard''',
+              (user_id, node_number, short_name, long_name, hw_model, last_heard))
     conn.commit()
     conn.close()
+
+def store_neighbors(node_id, neighbor_node_id, snr, timestamp):
+    """Store neighbor information in the database."""
+    conn = sqlite3.connect('messages.db')
+    c = conn.cursor()
+    c.execute('''INSERT INTO neighbors (node_id, neighbor_node_id, snr, timestamp)
+                 VALUES (?, ?, ?, ?)''',
+              (node_id, neighbor_node_id, snr, timestamp))
+    conn.commit()
+    conn.close()
+
 
 # Function to send a message (from the first script)
 def send_message(interface, fromId, text, channel, toId):
