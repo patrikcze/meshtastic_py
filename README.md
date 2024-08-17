@@ -109,3 +109,66 @@ Small app which will do the same like previous one, but it will try to pong you 
 Also if you send the `Ping` command the node will try to traceroute sender. 
 
 ![Example](./images/pongpythonscreenshot.png)
+
+## get-reply.py
+
+To run the script on background (for example on Raspberry Pi ;-))
+```bash
+screen -L -Logfile ./output.log ./get-reply.py &
+```
+
+Actaully I've `Merged` two scripts in one actually it is `pong.py` and `get-messages-to-db.py` merged together. Will try to collect information gathered from meshnetwork to database and also replies basically to two commands `Ping` and `Alive?`. 
+
+There is improved response in terms of reply on Ping. `thinking about adding traceroute back information` too. 
+
+`Pong message:`
+```shell
+[Automatic Reply]
+🏓 pong to !userid at 2024-08-17 16:46:59.
+Hops away: 0
+Receive time: 2024-08-17 15:32:50
+```
+
+New collection of `neighbor info` :
+
+**Query**:
+```sql
+SELECT 
+    n1.long_name AS node_long_name,
+    n2.long_name AS neighbor_long_name,
+    COUNT(neighbors.neighbor_node_id) AS total_neighbors,
+    AVG(neighbors.snr) AS average_snr,
+    MIN(neighbors.snr) AS min_snr,
+    MAX(neighbors.snr) AS max_snr
+FROM 
+    neighbors
+JOIN 
+    nodes n1 ON neighbors.node_id = n1.node_number
+LEFT JOIN 
+    nodes n2 ON neighbors.neighbor_node_id = n2.node_number
+GROUP BY 
+    n1.long_name, n2.long_name
+ORDER BY 
+    n1.long_name, total_neighbors DESC;
+```
+
+Update collection of environment data. 
+
+Select your temperature data collected.
+**Query**
+```sql
+SELECT 
+    n.long_name AS node_name,
+    e.temperature AS temperature,
+    e.humidity AS humidity,
+    e.bar AS barometric_pressure,
+    e.iaq AS air_quality_index,
+    datetime(e.timestamp, 'unixepoch', 'localtime') AS european_time
+FROM 
+    environment e
+JOIN 
+    nodes n ON e.node_id = n.user_id
+ORDER BY 
+    n.long_name, european_time ASC;
+
+```
