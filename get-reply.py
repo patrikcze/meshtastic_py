@@ -302,6 +302,16 @@ def on_receive(packet, interface):
             
             print(f"📊 Telemetry data received from {from_short_name} ({fromId}): battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
             store_telemetry(fromId, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp)
+            # Check if environmental data is present in telemetry
+            environment_metrics = telemetry.get('environmentMetrics', {})
+            if environment_metrics:
+                temperature = environment_metrics.get('temperature', None)
+                relative_humidity = environment_metrics.get('relativeHumidity', None)
+                barometric_pressure = environment_metrics.get('barometricPressure', None)
+                iaq = environment_metrics.get('iaq', None)  # Assuming IAQ (Indoor Air Quality) might be included
+
+                print(f"🌲 Environment data found in telemetry from {from_short_name} ({fromId}): temperature={temperature}, relative_humidity={relative_humidity}, barometric_pressure={barometric_pressure}, iaq={iaq}")
+                store_environment(fromId, temperature, relative_humidity, barometric_pressure, iaq, timestamp)
 
         elif portnum == 'POSITION_APP':
             position = packet['decoded'].get('position', {})
