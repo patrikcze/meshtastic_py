@@ -35,7 +35,8 @@ def initialize_db():
                     timestamp INTEGER
                 )''')
     c.execute('''CREATE TABLE IF NOT EXISTS nodes (
-                    node_id TEXT PRIMARY KEY,
+                    user_id TEXT PRIMARY KEY,
+                    node_number TEXT,
                     short_name TEXT,
                     long_name TEXT,
                     hw_model TEXT,
@@ -69,6 +70,13 @@ def initialize_db():
                     hop_snr REAL,
                     timestamp INTEGER
                 )''')
+    c.execute('''CREATE TABLE IF NOT EXISTS neighbors (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                node_id TEXT,
+                neighbor_node_id TEXT,
+                snr REAL,
+                timestamp INTEGER
+            )''')
     c.execute('''CREATE TABLE IF NOT EXISTS routing (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     from_node TEXT,
@@ -199,7 +207,7 @@ def on_receive(packet, interface):
     timestamp = int(time_module.time())
 
     # Debug print statement to log the entire packet
-    print(f"Received packet: {packet}")
+    # print(f"Received packet: {packet}")
 
     if 'decoded' in packet:
         portnum = packet['decoded'].get('portnum')
