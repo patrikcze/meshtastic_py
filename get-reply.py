@@ -237,7 +237,7 @@ def on_receive(packet, interface):
             current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             print(f"Received 'Ping' from {fromId}. Sending 'pong' and trace route.")
             reply_text = (
-                f"[Automatic Reply]\n 🏓 pong to {fromId} at {current_time}.\n"
+                f"[Automatic Reply]\n🏓 pong to {fromId} at {current_time}.\n"
                 f"Hops away: {hops_away}\n"
                 f"Receive time: {rx_time_human}"
             )
