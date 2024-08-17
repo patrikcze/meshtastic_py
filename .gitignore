@@ -127,4 +127,5 @@ cython_debug/
 # Exclude messages.db
 messages.db
 traffic_analysis.db
+*.db
 
