@@ -20,8 +20,16 @@ WITH LatestPositions AS (
         positions p
 )
 SELECT 
+    n1.user_id AS node_user_id,
     n1.long_name AS node_long_name,
+    n1.hw_model AS node_hw_model,
+    n1.short_name AS node_short_name,
+    datetime(n1.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+    n2.user_id AS neighbor_user_id,
     n2.long_name AS neighbor_long_name,
+    n2.hw_model AS neighbor_hw_model,
+    n2.short_name AS neighbor_short_name,
+    datetime(n2.last_heard, 'unixepoch', 'localtime') AS neighbor_last_heard,
     lp1.latitude AS node_latitude,
     lp1.longitude AS node_longitude,
     lp2.latitude AS neighbor_latitude,
@@ -43,7 +51,7 @@ WHERE
     lp1.latitude IS NOT NULL AND lp1.longitude IS NOT NULL AND
     lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL
 GROUP BY 
-    n1.long_name, n2.long_name
+    n1.user_id, n1.long_name, n2.long_name, lp1.latitude, lp1.longitude
 ORDER BY 
     n1.long_name;
 """
@@ -60,22 +68,48 @@ connections = []
 
 # Process the results
 for row in results:
-    node_long_name = row[0]
-    neighbor_long_name = row[1]
-    node_latitude = row[2]
-    node_longitude = row[3]
-    neighbor_latitude = row[4]
-    neighbor_longitude = row[5]
-    average_snr = row[6]
-    min_snr = row[7]
-    max_snr = row[8]
+    node_user_id = row[0]
+    node_long_name = row[1]
+    node_hw_model = row[2]
+    node_short_name = row[3]
+    node_last_heard = row[4]
+    neighbor_user_id = row[5]
+    neighbor_long_name = row[6]
+    neighbor_hw_model = row[7]
+    neighbor_short_name = row[8]
+    neighbor_last_heard = row[9]
+    node_latitude = row[10]
+    node_longitude = row[11]
+    neighbor_latitude = row[12]
+    neighbor_longitude = row[13]
+    average_snr = row[14]
+    min_snr = row[15]
+    max_snr = row[16]
+
+    # Debug: Print the values being processed for nodes and neighbors
+    print(f"Node: {node_long_name}, User ID: {node_user_id}, HW Model: {node_hw_model}, Short Name: {node_short_name}, Last Heard: {node_last_heard}")
+    print(f"Neighbor: {neighbor_long_name}, User ID: {neighbor_user_id}, HW Model: {neighbor_hw_model}, Short Name: {neighbor_short_name}, Last Heard: {neighbor_last_heard}")
 
     # Ensure each node has only one marker on the map
     if node_long_name not in node_positions:
-        node_positions[node_long_name] = (node_latitude, node_longitude)
+        node_positions[node_long_name] = {
+            'latitude': node_latitude,
+            'longitude': node_longitude,
+            'user_id': node_user_id,
+            'hw_model': node_hw_model,
+            'short_name': node_short_name,
+            'last_heard': node_last_heard
+        }
 
     if neighbor_long_name not in node_positions:
-        node_positions[neighbor_long_name] = (neighbor_latitude, neighbor_longitude)
+        node_positions[neighbor_long_name] = {
+            'latitude': neighbor_latitude,
+            'longitude': neighbor_longitude,
+            'user_id': neighbor_user_id,
+            'hw_model': neighbor_hw_model,
+            'short_name': neighbor_short_name,
+            'last_heard': neighbor_last_heard
+        }
 
     # Add the connection between the node and its neighbor with SNR details
     connections.append((
@@ -88,22 +122,26 @@ for row in results:
 
 # Create the map centered around the first node with Folium
 if node_positions:
-    first_position = next(iter(node_positions.values()))
+    first_position = next(iter(node_positions.values()))['latitude'], next(iter(node_positions.values()))['longitude']
     folium_map = folium.Map(location=first_position, zoom_start=10)
 
     # Use MarkerCluster to handle overlapping markers
     marker_cluster = MarkerCluster().add_to(folium_map)
 
     # Add nodes to the map with customized popups
-    for node_long_name, (latitude, longitude) in node_positions.items():
+    for node_long_name, details in node_positions.items():
         popup_html = f"""
-        <div style="font-size: 14px; font-weight: bold; text-align: center; width: 200px;">
-            {node_long_name}
+        <div style="font-size: 14px; text-align: left; width: 250px;">
+            <b>{node_long_name}</b><br>
+            <b>User ID:</b> {details.get('user_id', 'N/A')}<br>
+            <b>Hardware Model:</b> {details.get('hw_model', 'N/A')}<br>
+            <b>Short Name:</b> {details.get('short_name', 'N/A')}<br>
+            <b>Last Heard:</b> {details.get('last_heard', 'N/A')}
         </div>
         """
         popup = folium.Popup(popup_html, max_width=300)
         folium.Marker(
-            location=[latitude, longitude],
+            location=[details['latitude'], details['longitude']],
             popup=popup,
             icon=folium.Icon(color="blue")
         ).add_to(marker_cluster)
@@ -126,6 +164,6 @@ if node_positions:
     # Save the map to an HTML file
     folium_map.save("mesh_network_osm_map.html")
 
-    print("Map has been created. Open 'mesh_network_map.html' in your browser to view it.")
+    print("Map has been created. Open 'mesh_network_osm_map.html' in your browser to view it.")
 else:
     print("No valid coordinates available to create the map.")
