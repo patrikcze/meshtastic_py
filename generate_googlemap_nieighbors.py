@@ -92,7 +92,7 @@ if latitudes and longitudes:  # Ensure there are valid lat/long values
         gmap.text(latitudes[i], longitudes[i], labels[i], color='black', size='medium')
 
     # Generate the map
-    gmap.draw("mesh_network_map.html")
+    gmap.draw("mesh_network_google_map.html")
 
     print("Map has been created. Open 'mesh_network_map.html' in your browser to view it.")
 else:
