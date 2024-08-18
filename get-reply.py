@@ -412,7 +412,7 @@ def print_meshtastic_banner():
       ████  ███   ███   ███████   ███████ █████████   ███   ███   ███    ███████    ██   ████  ██
     ████  ████     ███  ██             ██ ██     ██   ███  ███     ███  ██    ██    ██  ████   ███    ██
     ███   ██         ██ ████████ ████████ ██     ██   ███ ███        ██ ████████    ██ ███      ████████
-    Save messages from Meshtastic to a SQLite database.
+    Save messages from Meshtastic to a SQLite database and Reply to Ping.
     """
     print(banner)
 
