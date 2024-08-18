@@ -31,6 +31,7 @@ Requires `meshtastic` and `pytap2` and `sqlite3` modules.
 ```shell
 pip3 install meshtastic
 pip3 install pytap2
+pip3 install networkx matplotlib meshtastic flask_socketio flask_cors pandas folium gmplot
 ```
 
 Make sure pip and meshtastic is fully updated:
@@ -38,6 +39,11 @@ Make sure pip and meshtastic is fully updated:
 ```shell
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade meshtastic
+```
+Or just simply:
+
+```shell
+pip install -r requirements.txt
 ```
 
 ## Description
@@ -47,16 +53,23 @@ Basic setup of `SQLITE3` database for storing some data:
 - Environment metrics (Temperature)
 - Messages (Will keep track of all messages in default, and encrypted channels, also direct messages)
 - Nodes (will try to make updated database of visible nodes)
+    - **Update**: Added new columne for Node# (Neighbors)
+    - Still missing MAC and other info to be collected. 
 - Positions (will keep track of all possitions packet recieved)
 - Telemetry (basic telemetry received from nodes)
-- Traceroute (WORK IN PROGRESS)
+- **New**: Added collection of Neighbor_Info from network `get-reply.py` only. 
+- Traceroute (WORK IN PROGRESS) **Still doesn't collect!**
 
 ## Run 
 
 ```bash
 python3 get-messages-to-db.py
 ```
+Or running in background:
 
+```shell
+screen -L -Logfile ./output.log ./get-reply.py &
+```
 
 ## Query database
 
@@ -94,7 +107,7 @@ WHERE nodes.short_name = 'node1';
 
 
 ```
-## app.py
+## app.py (not fully working)
 
 Added new python code, to render template HTML and generate some simple charts.
 At this step just basic drawing of environment metrics. Temperature, humidity.
@@ -173,7 +186,7 @@ ORDER BY
 
 ```
 
-## generate_googlemap.py
+## generate_googlemap_neighbors.py
 
 Will generate `mesh_network_map.html` with positions from actual nodes and their neigbors. It is using data collected in table `neigbors` and using last known position from table `positions`. 
 
@@ -209,6 +222,56 @@ LEFT JOIN
     LatestPositions lp1 ON n1.user_id = lp1.node_id AND lp1.rn = 1
 LEFT JOIN 
     LatestPositions lp2 ON n2.user_id = lp2.node_id AND lp2.rn = 1
+GROUP BY 
+    n1.long_name, n2.long_name
+ORDER BY 
+    n1.long_name;
+```
+
+## generate_osm_neighbors.py
+
+Same as google, just using OSM (OpenStreetMap) to draw positions and SNR lines to neighbor nodes into map. 
+
+
+![OSM](./images/neigbors_osm.png)
+
+Query used in this case:
+
+```sql
+WITH LatestPositions AS (
+    SELECT 
+        p.node_id,
+        p.latitude,
+        p.longitude,
+        p.altitude,
+        datetime(p.timestamp, 'unixepoch', 'localtime') AS last_position_time,
+        ROW_NUMBER() OVER (PARTITION BY p.node_id ORDER BY p.timestamp DESC) AS rn
+    FROM 
+        positions p
+)
+SELECT 
+    n1.long_name AS node_long_name,
+    n2.long_name AS neighbor_long_name,
+    lp1.latitude AS node_latitude,
+    lp1.longitude AS node_longitude,
+    lp2.latitude AS neighbor_latitude,
+    lp2.longitude AS neighbor_longitude,
+    AVG(neighbors.snr) AS average_snr,
+    MIN(neighbors.snr) AS min_snr,
+    MAX(neighbors.snr) AS max_snr
+FROM 
+    neighbors
+JOIN 
+    nodes n1 ON neighbors.node_id = n1.node_number
+LEFT JOIN 
+    nodes n2 ON neighbors.neighbor_node_id = n2.node_number
+LEFT JOIN 
+    LatestPositions lp1 ON n1.user_id = lp1.node_id AND lp1.rn = 1
+LEFT JOIN 
+    LatestPositions lp2 ON n2.user_id = lp2.node_id AND lp2.rn = 1
+WHERE
+    lp1.latitude IS NOT NULL AND lp1.longitude IS NOT NULL AND
+    lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL
 GROUP BY 
     n1.long_name, n2.long_name
 ORDER BY 
