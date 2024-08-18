@@ -12,9 +12,13 @@ import logging
 
 # Set up logging configuration
 logging.basicConfig(
-    level=logging.DEBUG,  # Change to INFO or WARNING to reduce verbosity
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.FileHandler("meshtastic.log"),
+        logging.StreamHandler()
+    ]
 )
 
 logger = logging.getLogger(__name__)
