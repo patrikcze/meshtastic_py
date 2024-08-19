@@ -132,3 +132,7 @@ traffic_analysis.db
 # Ignore generated map html
 mesh_network_map.html
 
+
+# Ignore Meshtastic log
+meshtastic.log
+*.log
