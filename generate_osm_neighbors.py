@@ -18,6 +18,20 @@ WITH LatestPositions AS (
         ROW_NUMBER() OVER (PARTITION BY p.node_id ORDER BY p.timestamp DESC) AS rn
     FROM 
         positions p
+),
+AggregatedNeighbors AS (
+    SELECT
+        node_id,
+        neighbor_node_id,
+        AVG(snr) AS average_snr,
+        MIN(snr) AS min_snr,
+        MAX(snr) AS max_snr,
+        COUNT(*) AS record_count,
+        MAX(timestamp) AS last_seen
+    FROM
+        neighbors
+    GROUP BY
+        node_id, neighbor_node_id
 )
 SELECT 
     n1.user_id AS node_user_id,
@@ -29,20 +43,21 @@ SELECT
     n2.long_name AS neighbor_long_name,
     n2.hw_model AS neighbor_hw_model,
     n2.short_name AS neighbor_short_name,
-    datetime(n2.last_heard, 'unixepoch', 'localtime') AS neighbor_last_heard,
+    datetime(ag.last_seen, 'unixepoch', 'localtime') AS neighbor_last_heard,
     lp1.latitude AS node_latitude,
     lp1.longitude AS node_longitude,
     lp2.latitude AS neighbor_latitude,
     lp2.longitude AS neighbor_longitude,
-    AVG(neighbors.snr) AS average_snr,
-    MIN(neighbors.snr) AS min_snr,
-    MAX(neighbors.snr) AS max_snr
+    ag.average_snr,
+    ag.min_snr,
+    ag.max_snr,
+    ag.record_count
 FROM 
-    neighbors
+    AggregatedNeighbors ag
 JOIN 
-    nodes n1 ON neighbors.node_id = n1.node_number
+    nodes n1 ON ag.node_id = n1.node_number
 LEFT JOIN 
-    nodes n2 ON neighbors.neighbor_node_id = n2.node_number
+    nodes n2 ON ag.neighbor_node_id = n2.node_number
 LEFT JOIN 
     LatestPositions lp1 ON n1.user_id = lp1.node_id AND lp1.rn = 1
 LEFT JOIN 
@@ -50,10 +65,8 @@ LEFT JOIN
 WHERE
     lp1.latitude IS NOT NULL AND lp1.longitude IS NOT NULL AND
     lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL
-GROUP BY 
-    n1.user_id, n1.long_name, n2.long_name, lp1.latitude, lp1.longitude
 ORDER BY 
-    n1.long_name;
+    n1.long_name, neighbor_last_heard DESC;
 """
 
 cursor.execute(query)
@@ -85,10 +98,7 @@ for row in results:
     average_snr = row[14]
     min_snr = row[15]
     max_snr = row[16]
-
-    # Debug: Print the values being processed for nodes and neighbors
-    print(f"Node: {node_long_name}, User ID: {node_user_id}, HW Model: {node_hw_model}, Short Name: {node_short_name}, Last Heard: {node_last_heard}")
-    print(f"Neighbor: {neighbor_long_name}, User ID: {neighbor_user_id}, HW Model: {neighbor_hw_model}, Short Name: {neighbor_short_name}, Last Heard: {neighbor_last_heard}")
+    record_count = row[17]
 
     # Ensure each node has only one marker on the map
     if node_long_name not in node_positions:
@@ -112,21 +122,30 @@ for row in results:
         }
 
     # Add the connection between the node and its neighbor with SNR details
-    connections.append((
-        (node_latitude, neighbor_latitude),
-        (node_longitude, neighbor_longitude),
-        average_snr,
-        min_snr,
-        max_snr
-    ))
+    connections.append({
+        'node_latitude': node_latitude,
+        'node_longitude': node_longitude,
+        'neighbor_latitude': neighbor_latitude,
+        'neighbor_longitude': neighbor_longitude,
+        'average_snr': average_snr,
+        'min_snr': min_snr,
+        'max_snr': max_snr,
+        'record_count': record_count,
+        'node_long_name': node_long_name,
+        'neighbor_long_name': neighbor_long_name
+    })
 
 # Create the map centered around the first node with Folium
 if node_positions:
     first_position = next(iter(node_positions.values()))['latitude'], next(iter(node_positions.values()))['longitude']
     folium_map = folium.Map(location=first_position, zoom_start=10)
 
+    # Create feature groups for markers and lines
+    node_group = folium.FeatureGroup(name="Nodes")
+    connection_group = folium.FeatureGroup(name="Connections")
+
     # Use MarkerCluster to handle overlapping markers
-    marker_cluster = MarkerCluster().add_to(folium_map)
+    marker_cluster = MarkerCluster().add_to(node_group)
 
     # Add nodes to the map with customized popups
     for node_long_name, details in node_positions.items():
@@ -149,17 +168,26 @@ if node_positions:
     # Draw connections between nodes and their neighbors with SNR details
     for connection in connections:
         line_popup = folium.Popup(
-            f"<b>Average SNR:</b> {connection[2]:.2f}<br>"
-            f"<b>Min SNR:</b> {connection[3]:.2f}<br>"
-            f"<b>Max SNR:</b> {connection[4]:.2f}", 
-            max_width=200
+            f"<b>Connection between:</b> {connection['node_long_name']} <b>and</b> {connection['neighbor_long_name']}<br>"
+            f"<b>Average SNR:</b> {connection['average_snr']:.2f}<br>"
+            f"<b>Min SNR:</b> {connection['min_snr']:.2f}<br>"
+            f"<b>Max SNR:</b> {connection['max_snr']:.2f}<br>"
+            f"<b>Records Collected:</b> {connection['record_count']}", 
+            max_width=300
         )
         folium.PolyLine(
-            locations=[[connection[0][0], connection[1][0]], [connection[0][1], connection[1][1]]],
+            locations=[[connection['node_latitude'], connection['node_longitude']], [connection['neighbor_latitude'], connection['neighbor_longitude']]],
             color="blue",
             weight=2.5,
             popup=line_popup
-        ).add_to(folium_map)
+        ).add_to(connection_group)
+
+    # Add the groups to the map
+    node_group.add_to(folium_map)
+    connection_group.add_to(folium_map)
+
+    # Add layer control to toggle visibility
+    folium.LayerControl().add_to(folium_map)
 
     # Save the map to an HTML file
     folium_map.save("mesh_network_osm_map.html")
