@@ -12,7 +12,7 @@ import logging
 
 # Set up logging configuration
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
@@ -184,7 +184,7 @@ def upsert_node(user_id, node_number, short_name, long_name, hw_model, last_hear
               (user_id, node_number, short_name, long_name, hw_model, last_heard))
     conn.commit()
     conn.close()
-    logger.info(f"Upserted node information for {short_name} ({user_id}).")
+    logger.info(f"Upserted node information for {short_name} ({user_id} #{node_number}).")
 
 def store_neighbors(node_id, neighbor_node_id, snr, timestamp):
     """Store neighbor information in the database."""
