@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 conn = sqlite3.connect('messages.db')
 
 # Query to fetch telemetry data for a specific node
-node_id = '!ac68bd23'  # Replace with the desired node ID
+node_id = ''  # Replace with the desired node ID
 query = f"SELECT * FROM telemetry WHERE node_id = '{node_id}'"
 
 # Load the data into a DataFrame
