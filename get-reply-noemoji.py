@@ -15,7 +15,7 @@ import serial.tools.list_ports
 
 # Set up logging configuration
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
@@ -492,7 +492,7 @@ def main():
 
     # Configure your interface type here ('serial' or 'tcp')
     interface_type = 'serial'  # Change to 'tcp' if needed
-    port = '/dev/cu.usbmodem323301'  # Specify the port if needed (e.g., '/dev/ttyUSB0')
+    port = None  # Specify the port if needed (e.g., '/dev/ttyUSB0')
     hostname = 'meshtastic.local'  # Specify the hostname if using TCP
 
     while True:
