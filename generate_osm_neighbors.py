@@ -7,7 +7,7 @@ from folium.plugins import MarkerCluster
 conn = sqlite3.connect('messages.db')
 cursor = conn.cursor()
 
-# Query to fetch nodes, neighbors, positions, and SNR details
+# Combined query to fetch nodes, neighbors, positions, and SNR details
 query = """
 WITH LatestPositions AS (
     SELECT 
@@ -33,41 +33,72 @@ AggregatedNeighbors AS (
         neighbors
     GROUP BY
         node_id, neighbor_node_id
+),
+NodesWithNeighbors AS (
+    SELECT 
+        n1.user_id AS node_user_id,
+        n1.long_name AS node_long_name,
+        n1.hw_model AS node_hw_model,
+        n1.short_name AS node_short_name,
+        datetime(n1.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+        n2.user_id AS neighbor_user_id,
+        n2.long_name AS neighbor_long_name,
+        n2.hw_model AS neighbor_hw_model,
+        n2.short_name AS neighbor_short_name,
+        datetime(ag.last_seen, 'unixepoch', 'localtime') AS neighbor_last_heard,
+        lp1.latitude AS node_latitude,
+        lp1.longitude AS node_longitude,
+        lp2.latitude AS neighbor_latitude,
+        lp2.longitude AS neighbor_longitude,
+        ag.average_snr,
+        ag.min_snr,
+        ag.max_snr,
+        ag.record_count
+    FROM 
+        AggregatedNeighbors ag
+    JOIN 
+        nodes n1 ON ag.node_id = n1.node_number
+    LEFT JOIN 
+        nodes n2 ON ag.neighbor_node_id = n2.node_number
+    LEFT JOIN 
+        LatestPositions lp1 ON n1.user_id = lp1.node_id AND lp1.rn = 1
+    LEFT JOIN 
+        LatestPositions lp2 ON n2.user_id = lp2.node_id AND lp2.rn = 1
+    WHERE
+        lp1.latitude IS NOT NULL AND lp1.longitude IS NOT NULL AND
+        lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL
+    ORDER BY 
+        n1.long_name, neighbor_last_heard DESC
 )
+SELECT * FROM NodesWithNeighbors
+UNION ALL
 SELECT 
-    n1.user_id AS node_user_id,
-    n1.long_name AS node_long_name,
-    n1.hw_model AS node_hw_model,
-    n1.short_name AS node_short_name,
-    datetime(n1.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
-    n2.user_id AS neighbor_user_id,
-    n2.long_name AS neighbor_long_name,
-    n2.hw_model AS neighbor_hw_model,
-    n2.short_name AS neighbor_short_name,
-    datetime(ag.last_seen, 'unixepoch', 'localtime') AS neighbor_last_heard,
-    lp1.latitude AS node_latitude,
-    lp1.longitude AS node_longitude,
-    lp2.latitude AS neighbor_latitude,
-    lp2.longitude AS neighbor_longitude,
-    ag.average_snr,
-    ag.min_snr,
-    ag.max_snr,
-    ag.record_count
+    n.user_id AS node_user_id,
+    n.long_name AS node_long_name,
+    n.hw_model AS node_hw_model,
+    n.short_name AS node_short_name,
+    datetime(n.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+    NULL AS neighbor_user_id,
+    NULL AS neighbor_long_name,
+    NULL AS neighbor_hw_model,
+    NULL AS neighbor_short_name,
+    NULL AS neighbor_last_heard,
+    lp.latitude AS node_latitude,
+    lp.longitude AS node_longitude,
+    NULL AS neighbor_latitude,
+    NULL AS neighbor_longitude,
+    NULL AS average_snr,
+    NULL AS min_snr,
+    NULL AS max_snr,
+    NULL AS record_count
 FROM 
-    AggregatedNeighbors ag
-JOIN 
-    nodes n1 ON ag.node_id = n1.node_number
+    nodes n
 LEFT JOIN 
-    nodes n2 ON ag.neighbor_node_id = n2.node_number
+    AggregatedNeighbors ag ON n.node_number = ag.node_id
 LEFT JOIN 
-    LatestPositions lp1 ON n1.user_id = lp1.node_id AND lp1.rn = 1
-LEFT JOIN 
-    LatestPositions lp2 ON n2.user_id = lp2.node_id AND lp2.rn = 1
-WHERE
-    lp1.latitude IS NOT NULL AND lp1.longitude IS NOT NULL AND
-    lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL
-ORDER BY 
-    n1.long_name, neighbor_last_heard DESC;
+    LatestPositions lp ON n.user_id = lp.node_id AND lp.rn = 1
+WHERE 
+    ag.node_id IS NULL AND lp.latitude IS NOT NULL AND lp.longitude IS NOT NULL;
 """
 
 cursor.execute(query)
@@ -79,6 +110,7 @@ conn.close()
 # Prepare lists for the map
 node_positions = {}
 connections = []
+no_neighbor_positions = []
 
 # Process the results
 for row in results:
@@ -101,49 +133,63 @@ for row in results:
     max_snr = row[16]
     record_count = row[17]
 
-    # Ensure each node has only one marker on the map
-    if node_long_name not in node_positions:
-        node_positions[node_long_name] = {
+    if neighbor_long_name is None:
+        # Handle nodes without neighbors
+        no_neighbor_positions.append({
             'latitude': node_latitude,
             'longitude': node_longitude,
             'user_id': node_user_id,
             'hw_model': node_hw_model,
             'short_name': node_short_name,
-            'last_heard': node_last_heard
-        }
+            'last_heard': node_last_heard,
+            'long_name': node_long_name
+        })
+    else:
+        # Ensure each node has only one marker on the map
+        if node_long_name not in node_positions:
+            node_positions[node_long_name] = {
+                'latitude': node_latitude,
+                'longitude': node_longitude,
+                'user_id': node_user_id,
+                'hw_model': node_hw_model,
+                'short_name': node_short_name,
+                'last_heard': node_last_heard
+            }
 
-    if neighbor_long_name not in node_positions:
-        node_positions[neighbor_long_name] = {
-            'latitude': neighbor_latitude,
-            'longitude': neighbor_longitude,
-            'user_id': neighbor_user_id,
-            'hw_model': neighbor_hw_model,
-            'short_name': neighbor_short_name,
-            'last_heard': neighbor_last_heard
-        }
+        if neighbor_long_name not in node_positions:
+            node_positions[neighbor_long_name] = {
+                'latitude': neighbor_latitude,
+                'longitude': neighbor_longitude,
+                'user_id': neighbor_user_id,
+                'hw_model': neighbor_hw_model,
+                'short_name': neighbor_short_name,
+                'last_heard': neighbor_last_heard
+            }
 
-    # Add the connection between the node and its neighbor with SNR details
-    connections.append({
-        'node_latitude': node_latitude,
-        'node_longitude': node_longitude,
-        'neighbor_latitude': neighbor_latitude,
-        'neighbor_longitude': neighbor_longitude,
-        'average_snr': average_snr,
-        'min_snr': min_snr,
-        'max_snr': max_snr,
-        'record_count': record_count,
-        'node_long_name': node_long_name,
-        'neighbor_long_name': neighbor_long_name
-    })
+        # Add the connection between the node and its neighbor with SNR details
+        connections.append({
+            'node_latitude': node_latitude,
+            'node_longitude': node_longitude,
+            'neighbor_latitude': neighbor_latitude,
+            'neighbor_longitude': neighbor_longitude,
+            'average_snr': average_snr,
+            'min_snr': min_snr,
+            'max_snr': max_snr,
+            'record_count': record_count,
+            'node_long_name': node_long_name,
+            'neighbor_long_name': neighbor_long_name
+        })
 
 # Create the map centered around the first node with Folium
-if node_positions:
-    first_position = next(iter(node_positions.values()))['latitude'], next(iter(node_positions.values()))['longitude']
+if node_positions or no_neighbor_positions:
+    first_position = (next(iter(node_positions.values()))['latitude'], next(iter(node_positions.values()))['longitude']) \
+        if node_positions else (no_neighbor_positions[0]['latitude'], no_neighbor_positions[0]['longitude'])
     folium_map = folium.Map(location=first_position, zoom_start=10)
 
-    # Create feature groups for markers and lines
+    # Create feature groups for markers, lines, and nodes without neighbors
     node_group = folium.FeatureGroup(name="Nodes")
     connection_group = folium.FeatureGroup(name="Connections")
+    no_neighbor_group = folium.FeatureGroup(name="Nodes without Neighbors")
 
     # Use MarkerCluster to handle overlapping markers
     marker_cluster = MarkerCluster().add_to(node_group)
@@ -183,9 +229,28 @@ if node_positions:
             popup=line_popup
         ).add_to(connection_group)
 
+    # Add nodes without neighbors to the map
+    for details in no_neighbor_positions:
+        popup_html = f"""
+        <div style="font-size: 14px; text-align: left; width: 250px;">
+            <b>{details['long_name']}</b><br>
+            <b>User ID:</b> {details.get('user_id', 'N/A')}<br>
+            <b>Hardware Model:</b> {details.get('hw_model', 'N/A')}<br>
+            <b>Short Name:</b> {details.get('short_name', 'N/A')}<br>
+            <b>Last Heard:</b> {details.get('last_heard', 'N/A')}
+        </div>
+        """
+        popup = folium.Popup(popup_html, max_width=300)
+        folium.Marker(
+            location=[details['latitude'], details['longitude']],
+            popup=popup,
+            icon=folium.Icon(color="red")
+        ).add_to(no_neighbor_group)
+
     # Add the groups to the map
     node_group.add_to(folium_map)
     connection_group.add_to(folium_map)
+    no_neighbor_group.add_to(folium_map)
 
     # Add layer control to toggle visibility
     folium.LayerControl().add_to(folium_map)
