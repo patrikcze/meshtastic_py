@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import meshtastic
+import meshtastic.stream_interface
+import meshtastic.tcp_interface
 import meshtastic.serial_interface
 from meshtastic import BROADCAST_ADDR
 from meshtastic.protobuf import mesh_pb2, portnums_pb2
@@ -9,6 +11,7 @@ import datetime
 from google.protobuf.json_format import MessageToDict
 import sqlite3
 import logging
+import serial.tools.list_ports
 
 # Set up logging configuration
 logging.basicConfig(
@@ -101,6 +104,53 @@ def initialize_db():
     conn.commit()
     conn.close()
     logger.info("Database initialized successfully.")
+
+# Connection setup function
+def get_interface(interface_type='serial', port=None, hostname=None):
+    """
+    Opens and returns an instance of the meshtastic interface based on the provided configuration.
+
+    Args:
+        interface_type (str): Type of the interface ('serial' or 'tcp').
+        port (str): Serial port to connect to (for 'serial' interface).
+        hostname (str): Hostname for TCP connection (for 'tcp' interface).
+
+    Raises:
+        ValueError: For invalid or incomplete configurations.
+
+    Returns:
+        meshtastic.stream_interface.StreamInterface: Instance of StreamInterface.
+    """
+    while True:
+        try:
+            if interface_type == 'serial':
+                if port:
+                    return meshtastic.serial_interface.SerialInterface(port)
+                else:
+                    ports = list(serial.tools.list_ports.comports())
+                    if len(ports) == 1:
+                        return meshtastic.serial_interface.SerialInterface(ports[0].device)
+                    elif len(ports) > 1:
+                        port_list = ', '.join([p.device for p in ports])
+                        raise ValueError(f"Multiple serial ports detected: {port_list}. Specify one with the 'port' argument.")
+                    else:
+                        raise ValueError("No serial ports detected.")
+            elif interface_type == 'tcp':
+                if not hostname:
+                    raise ValueError("Hostname must be specified for TCP interface")
+                return meshtastic.tcp_interface.TCPInterface(hostname=hostname)
+            else:
+                raise ValueError("Invalid interface type specified.")
+        except PermissionError as e:
+            logger.error(f"PermissionError: {e}. Retrying in 5 seconds...")
+            time_module.sleep(5)
+        except ValueError as e:
+            logger.error(f"ValueError: {e}.")
+            break  # Exit the loop on ValueError
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}. Retrying in 5 seconds...")
+            time_module.sleep(5)
+
 
 # Store functions (from the second script)
 def store_message(message_id, sender, recipient, message, timestamp, channel):
@@ -440,19 +490,30 @@ def main():
     # Initialize the database
     initialize_db()
 
-    # Initialize the serial interface
-    interface = meshtastic.serial_interface.SerialInterface()
+    # Configure your interface type here ('serial' or 'tcp')
+    interface_type = 'serial'  # Change to 'tcp' if needed
+    port = '/dev/cu.usbmodem323301'  # Specify the port if needed (e.g., '/dev/ttyUSB0')
+    hostname = 'meshtastic.local'  # Specify the hostname if using TCP
 
-    # Subscribe to messages
-    pub.subscribe(on_receive, "meshtastic.receive")
-   
-    logger.info("Listening for messages... Press Ctrl+C to stop.")
-    try:
-        while True:
-            # Keep the script running to listen for messages
-            time_module.sleep(1)
-    except KeyboardInterrupt:
-        logger.info("Stopping message listener...")
+    while True:
+        try:
+            # Initialize the interface
+            interface = get_interface(interface_type=interface_type, port=port, hostname=hostname)
+
+            # Subscribe to messages
+            pub.subscribe(on_receive, "meshtastic.receive")
+        
+            logger.info("Listening for messages... Press Ctrl+C to stop.")
+            while True:
+                # Keep the script running to listen for messages
+                time_module.sleep(1)
+        except KeyboardInterrupt:
+            logger.info("Stopping message listener...")
+            break  # Exit the loop on keyboard interrupt
+        except Exception as e:
+            logger.error(f"An error occurred: {e}. Attempting to reconnect in 5 seconds...")
+            time_module.sleep(5)
+
 
 if __name__ == "__main__":
     print_meshtastic_banner()
