@@ -379,7 +379,7 @@ def on_receive(packet, interface):
                 barometric_pressure = environment_metrics.get('barometricPressure', None)
                 iaq = environment_metrics.get('iaq', None)  # Assuming IAQ (Indoor Air Quality) might be included
 
-                logger.info(f"🌲 Environment data found in telemetry from {from_short_name} ({fromId}): temperature={temperature}, relative_humidity={relative_humidity}, barometric_pressure={barometric_pressure}, iaq={iaq}")
+                logger.info(f"Environment data found in telemetry from {from_short_name} ({fromId}): temperature={temperature}, relative_humidity={relative_humidity}, barometric_pressure={barometric_pressure}, iaq={iaq}")
                 store_environment(fromId, temperature, relative_humidity, barometric_pressure, iaq, timestamp)
 
         elif portnum == 'POSITION_APP':

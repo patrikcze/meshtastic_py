@@ -136,3 +136,6 @@ mesh_network_map.html
 # Ignore Meshtastic log
 meshtastic.log
 *.log
+
+
+.DS_Store
