@@ -335,14 +335,14 @@ def on_receive(packet, interface):
 
         # Handle different message types
         if portnum == 'TEXT_MESSAGE_APP' and text:
-            logger.info(f"✉️  Plain text message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {text}")
+            logger.info(f"Plain text message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {text}")
             store_message(message_id, fromId, toId, text, timestamp, channel)
         # Respond to specific messages
             if text == 'Ping':
                 current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 logger.info(f"Received 'Ping' from {fromId}. Sending 'pong' and trace route.")
                 reply_text = (
-                    f"[Automatic Reply]\n🏓 pong to {fromId} at {current_time}.\n"
+                    f"[Automatic Reply]\n Reply to {fromId} at {current_time}.\n"
                     f"Hops away: {hops_away}\n"
                     f"Receive time: {rx_time_human}"
                 )
@@ -354,7 +354,7 @@ def on_receive(packet, interface):
 
             elif text == 'Alive?':
                 current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                reply_text = f"[Automatic Reply] Yes I'm alive ⏱️ {current_time}."
+                reply_text = f"[Automatic Reply] Yes I'm alive {current_time}."
                 logger.info(f"Received 'Alive?' from {fromId}. Sending '{reply_text}'.")
                 try:
                     send_message(interface, fromId, reply_text, channel, toId)
@@ -369,7 +369,7 @@ def on_receive(packet, interface):
             air_util_tx = telemetry.get('deviceMetrics', {}).get('airUtilTx', None)
             uptime_seconds = telemetry.get('deviceMetrics', {}).get('uptimeSeconds', None)
             
-            logger.info(f"📊 Telemetry data received from {from_short_name} ({fromId}): battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
+            logger.info(f"Telemetry data received from {from_short_name} ({fromId}): battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
             store_telemetry(fromId, battery_level, voltage, channel_utilization, air_util_tx, uptime_seconds, timestamp)
             # Check if environmental data is present in telemetry
             environment_metrics = telemetry.get('environmentMetrics', {})
@@ -390,7 +390,7 @@ def on_receive(packet, interface):
             time = position.get('time', None)
             sats_in_view = position.get('satsInView', None)
             
-            logger.info(f"📌 Position data received from {from_short_name} ({fromId}): latitude={latitude}, longitude={longitude}, altitude={altitude}, time={time}, sats_in_view={sats_in_view}")
+            logger.info(f"Position data received from {from_short_name} ({fromId}): latitude={latitude}, longitude={longitude}, altitude={altitude}, time={time}, sats_in_view={sats_in_view}")
             store_position(fromId, latitude, longitude, altitude, time, sats_in_view, timestamp)
 
         elif portnum == 'ENVIRONMENTAL_MEASUREMENT_APP':
@@ -400,7 +400,7 @@ def on_receive(packet, interface):
             bar = environment.get('bar', None)
             iaq = environment.get('iaq', None)
 
-            logger.info(f"🌲 Environment data received from {from_short_name} ({fromId}): temperature={temperature}, humidity={humidity}, bar={bar}, iaq={iaq}")
+            logger.info(f"Environment data received from {from_short_name} ({fromId}): temperature={temperature}, humidity={humidity}, bar={bar}, iaq={iaq}")
             store_environment(fromId, temperature, humidity, bar, iaq, timestamp)
 
         elif portnum == 'NODEINFO_APP':
@@ -418,17 +418,17 @@ def on_receive(packet, interface):
             air_util_tx = device_metrics.get('airUtilTx', None)
             uptime_seconds = device_metrics.get('uptimeSeconds', None)
             
-            logger.info(f"🕸️ Node info received from {from_short_name} ({fromId}): long_name={long_name}, short_name={short_name}, hw_model={hw_model}, snr={snr}, last_heard={last_heard}, battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
+            logger.info(f"Node info received from {from_short_name} ({fromId}): long_name={long_name}, short_name={short_name}, hw_model={hw_model}, snr={snr}, last_heard={last_heard}, battery_level={battery_level}, voltage={voltage}, channel_utilization={channel_utilization}, air_util_tx={air_util_tx}, uptime_seconds={uptime_seconds}")
             upsert_node(fromId, number, short_name, long_name, hw_model, last_heard)
 
         elif portnum == 'TRACEROUTE_APP':
             hops = packet['decoded'].get('hops', [])
-            logger.info(f"🧭 Traceroute data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): hops={hops}")
+            logger.info(f"Traceroute data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): hops={hops}")
             store_traceroute(fromId, toId, hops, timestamp)
 
         elif portnum == 'ROUTING_APP':
             routes = packet['decoded'].get('routes', [])
-            logger.info(f"🚏 Routing data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): routes={routes}")
+            logger.info(f"Routing data received from {from_short_name} ({fromId}) to {to_short_name} ({toId}): routes={routes}")
             store_routing(fromId, toId, str(routes), timestamp)
 
         elif portnum == 'NEIGHBORINFO_APP':
@@ -441,7 +441,7 @@ def on_receive(packet, interface):
                 neighbor_node_number = neighbor.get('nodeId')
                 snr = neighbor.get('snr')
                 store_neighbors(node_id, neighbor_node_number, snr, timestamp)
-                logger.info(f"🏘️ Stored neighbor info: {node_id} has neighbor {neighbor_node_number} with SNR {snr}")
+                logger.info(f"Stored neighbor info: {node_id} has neighbor {neighbor_node_number} with SNR {snr}")
 
     elif 'encrypted' in packet:
         encrypted_text = packet.get('encrypted')
@@ -468,11 +468,11 @@ def on_receive(packet, interface):
         if to_node_number is not None:
             upsert_node(toId, to_node_number, to_short_name, to_long_name, to_hw_model, to_last_heard)
 
-        logger.info(f"📧 Encrypted message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {encrypted_text}")
+        logger.info(f"Encrypted message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {encrypted_text}")
         store_message(message_id, fromId, toId, encrypted_text, timestamp, channel)
 
     else:
-        logger.error(f"🚨 Unknown message format: {packet}")
+        logger.error(f"Unknown message format: {packet}")
 
 def print_meshtastic_banner():
     banner = """
