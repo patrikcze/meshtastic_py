@@ -6,7 +6,8 @@ import meshtastic.stream_interface
 import meshtastic.tcp_interface
 import meshtastic.serial_interface
 from meshtastic import BROADCAST_ADDR
-from meshtastic.protobuf import mesh_pb2, portnums_pb2
+#from meshtastic.protobufs.config_pb2 import LoRaConfig
+from meshtastic.protobuf import mesh_pb2, portnums_pb2, config_pb2
 from pubsub import pub
 import time as time_module
 import datetime
@@ -521,10 +522,32 @@ def main():
     if interface.nodes:
         for n in interface.nodes.values():
             if n["num"] == interface.myInfo.my_node_num:
-                logger.info(f"My Node number is {n['num']} and my user id is {n['user']['id']} - hw model is {n['user']['hwModel']}")
-                logger.info(f"My short name is {n['user']['shortName']} and my long name is {n['user']['longName']}")
-    
-    print("Listening for messages... Press Ctrl+C to stop.")
+                logger.info(f"🙋‍♂️ My Node number is ({n['num']}) and my user id is ({n['user']['id']}) - hw model is {n['user']['hwModel']}")
+                logger.info(f"🙋‍♂️ My short name is ({n['user']['shortName']}) and my long name is ({n['user']['longName']})")
+        # Try accessing config or localConfig
+        lora_config = interface.localNode.localConfig.lora
+        
+        # Retrieve the LoRa configuration from the interface
+    lora_config = getattr(interface.localNode.localConfig, 'lora', None)
+
+    if lora_config:
+        # Get the modemPreset and region values
+        modem_preset_value = getattr(lora_config, 'modem_preset', None)
+        region_value = getattr(lora_config, 'region', None)
+
+        # Translate the modem preset and region code to their names
+        modem_preset_str = config_pb2.Config.LoRaConfig.ModemPreset.Name(modem_preset_value) if modem_preset_value is not None else "Unknown Modem Preset"
+        region_str = config_pb2.Config.LoRaConfig.RegionCode.Name(region_value) if region_value is not None else "Unknown Region"
+
+        # Print the translated values
+        logger.info(f"📡 Lora modemPreset: {modem_preset_str}")
+        logger.info(f"📡 Lora region: {region_str}")
+        logger.info(f"📡 Lora hop_limit: {getattr(lora_config, 'hop_limit', 'Not available')}")
+    else:
+        logger.warning("LoRa configuration not found.")
+
+            
+    print("🔊 Listening for messages... Press Ctrl+C to stop.")
     try:
         while True:
             # Keep the script running to listen for messages
