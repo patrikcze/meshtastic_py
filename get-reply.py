@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import sys
+import codecs
 import meshtastic
 import meshtastic.stream_interface
 import meshtastic.tcp_interface
@@ -19,10 +21,15 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
-        logging.FileHandler("meshtastic.log"),
-        logging.StreamHandler()
+        logging.FileHandler("meshtastic.log", encoding='utf-8'),
+        logging.StreamHandler(codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict'))
     ]
 )
+
+# Enforcing UTF-8 encoding for Windows
+# if sys.platform == "win32":
+#     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
 
 logger = logging.getLogger(__name__)
 
