@@ -522,6 +522,7 @@ def main():
         for n in interface.nodes.values():
             if n["num"] == interface.myInfo.my_node_num:
                 logger.info(f"My Node number is {n['num']} and my user id is {n['user']['id']} - hw model is {n['user']['hwModel']}")
+                logger.info(f"My short name is {n['user']['shortName']} and my long name is {n['user']['longName']}")
     
     print("Listening for messages... Press Ctrl+C to stop.")
     try:
