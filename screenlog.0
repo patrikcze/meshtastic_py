@@ -1,0 +1,374 @@
+2024-08-20 20:47:01 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:47:01 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:47:01 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:47:01 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:47:01 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Jsme pouze dva v éteru. Jinak žádný provoz. Mám SDR a monitorují frekvenci.
+2024-08-20 20:47:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:47:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:47:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:47:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:47:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:47:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:47:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.55565, relative_humidity=24.670424, barometric_pressure=986.3684, iaq=87
+2024-08-20 20:47:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:47:33 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:47:33 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:47:33 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:47:33 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:47:33 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=101, voltage=3.708, channel_utilization=0.97, air_util_tx=0.3970278, uptime_seconds=1610
+2024-08-20 20:47:33 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:48:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:48:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:48:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:48:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:48:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:48:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:48:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.63953, relative_humidity=24.582619, barometric_pressure=986.36914, iaq=86
+2024-08-20 20:48:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:48:33 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:48:33 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:48:33 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:48:33 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:48:33 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=101, voltage=3.708, channel_utilization=None, air_util_tx=0.3970278, uptime_seconds=1670
+2024-08-20 20:48:33 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:49:01 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:49:01 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:49:01 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:49:01 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:49:01 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Já jsem v Komíně, ulice Branka.
+2024-08-20 20:49:02 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:49:02 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:49:02 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:49:02 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:49:02 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Dnes je i LF mrtvo
+2024-08-20 20:49:03 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:49:03 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:49:03 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:49:03 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:49:03 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Resp kolem 19.00 něco ano ale nyní na 869MHz ticho
+2024-08-20 20:49:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:49:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:49:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:49:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:49:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:49:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:49:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.67533, relative_humidity=24.553183, barometric_pressure=986.35834, iaq=86
+2024-08-20 20:49:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:49:33 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:49:33 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:49:33 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:49:33 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:49:33 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Já jsem v Komíně, ulice Branka.
+2024-08-20 20:50:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:50:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:50:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:50:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:50:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:50:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:50:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.736088, relative_humidity=24.526468, barometric_pressure=986.3344, iaq=87
+2024-08-20 20:50:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:50:27 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:50:27 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:50:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:50:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:50:27 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Resp kolem 19.00 něco ano ale nyní na 869MHz ticho
+2024-08-20 20:50:32 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:50:32 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:50:32 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:50:32 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:50:32 - __main__ - INFO - 🚏 Routing data received from 8246 (!65e58246) to 8246 (!65e58246): routes=[]
+2024-08-20 20:50:32 - __main__ - INFO - Stored routing data from !65e58246 to !65e58246.
+2024-08-20 20:51:11 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:51:11 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:51:11 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:51:11 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:51:11 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:51:11 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:51:11 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.817398, relative_humidity=24.50532, barometric_pressure=986.31683, iaq=90
+2024-08-20 20:51:11 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:51:13 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:51:13 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:51:13 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:51:13 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:51:13 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: [Automatic Reply]
+🏓 pong to !65e58246 at 2024-08-20 20:51:13.
+Hops away: 0
+Receive time: 2024-08-20 20:51:11
+2024-08-20 20:51:13 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:51:13 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:51:13 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:51:13 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:51:13 - __main__ - INFO - 🧭 Traceroute data received from Z001 (!1f9fdd70) to 8246 (!65e58246): hops=[]
+2024-08-20 20:51:13 - __main__ - INFO - Stored traceroute data from !1f9fdd70 to !65e58246.
+2024-08-20 20:51:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:51:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:51:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:51:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:51:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:51:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:51:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.91671, relative_humidity=24.367691, barometric_pressure=986.31573, iaq=90
+2024-08-20 20:51:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:51:33 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:51:33 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:51:33 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:51:33 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:51:33 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=101, voltage=3.711, channel_utilization=7.7516665, air_util_tx=0.48341668, uptime_seconds=1850
+2024-08-20 20:51:33 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:52:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:52:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:52:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:52:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:52:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:52:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:52:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.90891, relative_humidity=24.467096, barometric_pressure=986.34015, iaq=94
+2024-08-20 20:52:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:52:36 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:52:36 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:52:36 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:52:36 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:52:36 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Z001 Alive
+2024-08-20 20:52:43 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:52:43 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:52:43 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:52:43 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:52:43 - __main__ - INFO - 🚏 Routing data received from 8246 (!65e58246) to 8246 (!65e58246): routes=[]
+2024-08-20 20:52:43 - __main__ - INFO - Stored routing data from !65e58246 to !65e58246.
+2024-08-20 20:52:46 - __main__ - WARNING - Skipping upsert for node with None user_id: , , , 0
+2024-08-20 20:52:46 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:52:46 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:52:46 - __main__ - INFO - 🧭 Traceroute data received from  (None) to 8246 (!65e58246): hops=[]
+2024-08-20 20:52:46 - __main__ - INFO - Stored traceroute data from None to !65e58246.
+2024-08-20 20:52:52 - __main__ - WARNING - Skipping upsert for node with None user_id: , , , 0
+2024-08-20 20:52:52 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:52:52 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:52:52 - __main__ - INFO - 🕸️ Node info received from  (None): long_name=KoziHora 🗼, short_name=kzh, hw_model=HELTEC_WSL_V3, snr=None, last_heard=None, battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:52:52 - __main__ - WARNING - Skipping upsert for node with None user_id: kzh, KoziHora 🗼, HELTEC_WSL_V3, None
+2024-08-20 20:53:12 - __main__ - WARNING - Skipping upsert for node with None user_id: , , , 0
+2024-08-20 20:53:12 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:53:12 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:53:12 - __main__ - INFO - 📊 Telemetry data received from  (None): battery_level=92, voltage=4.081, channel_utilization=None, air_util_tx=0.022944445, uptime_seconds=28856
+2024-08-20 20:53:13 - __main__ - INFO - Stored telemetry data for node None.
+2024-08-20 20:53:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:53:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:53:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:53:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:53:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:53:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:53:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.87125, relative_humidity=24.504494, barometric_pressure=986.34686, iaq=95
+2024-08-20 20:53:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:53:28 - __main__ - INFO - Upserting node: user_id=!33692cc8, node_number=862530760, short_name=kzh, long_name=KoziHora 🗼, hw_model=HELTEC_WSL_V3, last_heard=None
+2024-08-20 20:53:28 - __main__ - INFO - Upserted node information for kzh (!33692cc8 #862530760).
+2024-08-20 20:53:28 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:53:28 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:53:28 - __main__ - INFO - 📊 Telemetry data received from kzh (!33692cc8): battery_level=101, voltage=4.222, channel_utilization=4.02, air_util_tx=0.38916665, uptime_seconds=63058
+2024-08-20 20:53:28 - __main__ - INFO - Stored telemetry data for node !33692cc8.
+2024-08-20 20:53:56 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:53:56 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:53:56 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:53:56 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:53:56 - __main__ - INFO - 📊 Telemetry data received from Z001 (!1f9fdd70): battery_level=101, voltage=4.181, channel_utilization=2.2966666, air_util_tx=0.40933332, uptime_seconds=1847
+2024-08-20 20:53:56 - __main__ - INFO - Stored telemetry data for node !1f9fdd70.
+2024-08-20 20:54:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:54:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:54:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:54:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:54:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:54:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:54:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.957146, relative_humidity=24.397373, barometric_pressure=986.3393, iaq=92
+2024-08-20 20:54:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:54:33 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:54:33 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:54:33 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:54:33 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:54:33 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=101, voltage=3.712, channel_utilization=0.84333336, air_util_tx=0.53791666, uptime_seconds=2031
+2024-08-20 20:54:33 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:54:52 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:54:52 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:54:52 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:54:52 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:54:52 - __main__ - INFO - 🚏 Routing data received from 8246 (!65e58246) to 8246 (!65e58246): routes=[]
+2024-08-20 20:54:52 - __main__ - INFO - Stored routing data from !65e58246 to !65e58246.
+2024-08-20 20:54:55 - __main__ - INFO - Upserting node: user_id=!33692cc8, node_number=862530760, short_name=kzh, long_name=KoziHora 🗼, hw_model=HELTEC_WSL_V3, last_heard=None
+2024-08-20 20:54:55 - __main__ - INFO - Upserted node information for kzh (!33692cc8 #862530760).
+2024-08-20 20:54:55 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:54:55 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:54:55 - __main__ - INFO - 🧭 Traceroute data received from kzh (!33692cc8) to 8246 (!65e58246): hops=[]
+2024-08-20 20:54:55 - __main__ - INFO - Stored traceroute data from !33692cc8 to !65e58246.
+2024-08-20 20:54:58 - __main__ - INFO - Upserting node: user_id=!33692cc8, node_number=862530760, short_name=kzh, long_name=KoziHora 🗼, hw_model=HELTEC_WSL_V3, last_heard=None
+2024-08-20 20:54:58 - __main__ - INFO - Upserted node information for kzh (!33692cc8 #862530760).
+2024-08-20 20:54:58 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:54:58 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:54:58 - __main__ - INFO - 🧭 Traceroute data received from kzh (!33692cc8) to 8246 (!65e58246): hops=[]
+2024-08-20 20:54:58 - __main__ - INFO - Stored traceroute data from !33692cc8 to !65e58246.
+2024-08-20 20:55:02 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:55:02 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:55:02 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:55:02 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:55:02 - __main__ - INFO - 🚏 Routing data received from 8246 (!65e58246) to 8246 (!65e58246): routes=[]
+2024-08-20 20:55:02 - __main__ - INFO - Stored routing data from !65e58246 to !65e58246.
+2024-08-20 20:55:06 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:55:06 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:55:06 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:55:06 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:55:06 - __main__ - INFO - 🚏 Routing data received from 8246 (!65e58246) to 8246 (!65e58246): routes=[]
+2024-08-20 20:55:06 - __main__ - INFO - Stored routing data from !65e58246 to !65e58246.
+2024-08-20 20:55:12 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:55:12 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:55:12 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:55:12 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:55:12 - __main__ - INFO - 🧭 Traceroute data received from Z001 (!1f9fdd70) to 8246 (!65e58246): hops=[]
+2024-08-20 20:55:12 - __main__ - INFO - Stored traceroute data from !1f9fdd70 to !65e58246.
+2024-08-20 20:55:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:55:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:55:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:55:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:55:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:55:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:55:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.98529, relative_humidity=24.355232, barometric_pressure=986.36505, iaq=90
+2024-08-20 20:55:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:56:00 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:56:00 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:56:00 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:56:00 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:56:00 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Já žádné MQTT nevidím. 8246 kde ty?
+2024-08-20 20:56:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:56:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:56:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:56:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:56:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:56:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:56:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.997772, relative_humidity=24.338856, barometric_pressure=986.3906, iaq=89
+2024-08-20 20:56:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:57:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:57:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:57:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:57:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:57:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:57:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:57:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.98275, relative_humidity=24.316511, barometric_pressure=986.4008, iaq=91
+2024-08-20 20:57:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:58:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:58:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:58:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:58:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:58:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:58:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:58:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.979637, relative_humidity=24.28094, barometric_pressure=986.38293, iaq=89
+2024-08-20 20:58:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:58:29 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:58:29 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:58:29 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:58:29 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:58:29 - __main__ - INFO - 🚏 Routing data received from 8246 (!65e58246) to 8246 (!65e58246): routes=[]
+2024-08-20 20:58:29 - __main__ - INFO - Stored routing data from !65e58246 to !65e58246.
+2024-08-20 20:58:40 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:58:40 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:58:40 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:58:40 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:58:40 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: A já na sdr nevidím provoz vůbec a spíš co chvíli objevíme bug
+2024-08-20 20:59:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 20:59:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 20:59:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:59:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:59:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 20:59:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 20:59:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=43.997997, relative_humidity=24.333353, barometric_pressure=986.41327, iaq=89
+2024-08-20 20:59:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 20:59:54 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 20:59:54 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 20:59:54 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 20:59:54 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 20:59:54 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Přes den nejsou aktivní body, většina je vypojena nebo bez obsluhy. Až večer to začíná fungovat
+2024-08-20 21:00:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:00:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:00:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:00:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:00:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 21:00:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 21:00:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=44.01305, relative_humidity=24.320385, barometric_pressure=986.3871, iaq=89
+2024-08-20 21:00:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 21:00:48 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:00:48 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:00:48 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:00:48 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:00:48 - __main__ - INFO - Stored neighbor information: 1709539910 -> 530570608 with SNR -0.75.
+2024-08-20 21:00:48 - __main__ - INFO - 🏘️ Stored neighbor info: 1709539910 has neighbor 530570608 with SNR -0.75
+2024-08-20 21:00:48 - __main__ - INFO - Stored neighbor information: 1709539910 -> 862530760 with SNR -14.75.
+2024-08-20 21:00:48 - __main__ - INFO - 🏘️ Stored neighbor info: 1709539910 has neighbor 862530760 with SNR -14.75
+2024-08-20 21:00:48 - __main__ - INFO - Stored neighbor information: 1709539910 -> 1800108296 with SNR -14.5.
+2024-08-20 21:00:48 - __main__ - INFO - 🏘️ Stored neighbor info: 1709539910 has neighbor 1800108296 with SNR -14.5
+2024-08-20 21:01:06 - __main__ - WARNING - Skipping upsert for node with None user_id: , , , 0
+2024-08-20 21:01:06 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:01:06 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:01:06 - __main__ - INFO - 📊 Telemetry data received from  (None): battery_level=101, voltage=4.296, channel_utilization=0.5433333, air_util_tx=0.11613889, uptime_seconds=138722
+2024-08-20 21:01:06 - __main__ - INFO - Stored telemetry data for node None.
+2024-08-20 21:01:06 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 21:01:06 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 21:01:06 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:01:06 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:01:06 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Odkud vysíláš?
+2024-08-20 21:01:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:01:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:01:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:01:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:01:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 21:01:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 21:01:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=44.051205, relative_humidity=24.334087, barometric_pressure=986.4032, iaq=88
+2024-08-20 21:01:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 21:01:51 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:01:51 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:01:51 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:01:51 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:01:51 - __main__ - INFO - 🚏 Routing data received from 8246 (!65e58246) to 8246 (!65e58246): routes=[]
+2024-08-20 21:01:51 - __main__ - INFO - Stored routing data from !65e58246 to !65e58246.
+2024-08-20 21:02:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:02:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:02:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:02:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:02:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 21:02:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 21:02:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=44.061367, relative_humidity=24.31881, barometric_pressure=986.40015, iaq=87
+2024-08-20 21:02:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 21:02:29 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:02:29 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:02:29 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:02:29 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:02:29 - __main__ - INFO - 🚏 Routing data received from 8246 (!65e58246) to 8246 (!65e58246): routes=[]
+2024-08-20 21:02:29 - __main__ - INFO - Stored routing data from !65e58246 to !65e58246.
+2024-08-20 21:03:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:03:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:03:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:03:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:03:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 21:03:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 21:03:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=44.07426, relative_humidity=24.313282, barometric_pressure=986.39105, iaq=86
+2024-08-20 21:03:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 21:03:28 - __main__ - INFO - Upserting node: user_id=!1f9fdd70, node_number=530570608, short_name=Z001, long_name=Mesh Z001, hw_model=TBEAM, last_heard=None
+2024-08-20 21:03:28 - __main__ - INFO - Upserted node information for Z001 (!1f9fdd70 #530570608).
+2024-08-20 21:03:28 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:03:28 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:03:28 - __main__ - INFO - ✉️  Plain text message received from Z001 (!1f9fdd70) to  (^all) on channel 0: Ok, tak to máme blízko.
+2024-08-20 21:03:33 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:03:33 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:03:33 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:03:33 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:03:33 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=101, voltage=3.722, channel_utilization=1.8566666, air_util_tx=0.6672222, uptime_seconds=2571
+2024-08-20 21:03:33 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 21:04:27 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:04:27 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:04:27 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:04:27 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:04:27 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 21:04:27 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 21:04:27 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=44.066486, relative_humidity=24.282322, barometric_pressure=986.391, iaq=87
+2024-08-20 21:04:27 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 21:05:28 - __main__ - INFO - Upserting node: user_id=!65e58246, node_number=1709539910, short_name=8246, long_name=Přesunuto na LongFast ✅🫵🏻, hw_model=RAK4631, last_heard=0
+2024-08-20 21:05:28 - __main__ - INFO - Upserted node information for 8246 (!65e58246 #1709539910).
+2024-08-20 21:05:28 - __main__ - INFO - Upserting node: user_id=^all, node_number=4294967295, short_name=, long_name=, hw_model=, last_heard=0
+2024-08-20 21:05:28 - __main__ - INFO - Upserted node information for  (^all #4294967295).
+2024-08-20 21:05:28 - __main__ - INFO - 📊 Telemetry data received from 8246 (!65e58246): battery_level=None, voltage=None, channel_utilization=None, air_util_tx=None, uptime_seconds=None
+2024-08-20 21:05:28 - __main__ - INFO - Stored telemetry data for node !65e58246.
+2024-08-20 21:05:28 - __main__ - INFO - 🌲 Environment data found in telemetry from 8246 (!65e58246): temperature=44.030952, relative_humidity=24.24791, barometric_pressure=986.3913, iaq=85
+2024-08-20 21:05:28 - __main__ - INFO - Stored environmental data for node !65e58246.
+2024-08-20 21:05:28 - root - WARNING - Meshtastic serial port disconnected, disconnecting... read failed: [Errno 6] Device not configured
+^CStopping message listener...
