@@ -2,20 +2,25 @@
 import sqlite3
 import folium
 from folium.plugins import MarkerCluster
+from datetime import datetime, timedelta
+
+# Define the cutoff for "active" nodes (last 7 days)
+active_cutoff = datetime.now() - timedelta(days=7)
+active_cutoff_unix = int(active_cutoff.timestamp())
 
 # Connect to the SQLite database
 conn = sqlite3.connect('messages.db')
 cursor = conn.cursor()
 
 # Combined query to fetch nodes, neighbors, positions, and SNR details
-query = """
+query = f"""
 WITH LatestPositions AS (
     SELECT 
         p.node_id,
         p.latitude,
         p.longitude,
         p.altitude,
-        datetime(p.timestamp, 'unixepoch', 'localtime') AS last_position_time,
+        strftime('%d.%m.%Y %H:%M:%S', p.timestamp, 'unixepoch', 'localtime') AS last_position_time,
         ROW_NUMBER() OVER (PARTITION BY p.node_id ORDER BY p.timestamp DESC) AS rn
     FROM 
         positions p
@@ -40,12 +45,12 @@ NodesWithNeighbors AS (
         n1.long_name AS node_long_name,
         n1.hw_model AS node_hw_model,
         n1.short_name AS node_short_name,
-        datetime(n1.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+        strftime('%d.%m.%Y %H:%M:%S', n1.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
         n2.user_id AS neighbor_user_id,
         n2.long_name AS neighbor_long_name,
         n2.hw_model AS neighbor_hw_model,
         n2.short_name AS neighbor_short_name,
-        datetime(ag.last_seen, 'unixepoch', 'localtime') AS neighbor_last_heard,
+        strftime('%d.%m.%Y %H:%M:%S', ag.last_seen, 'unixepoch', 'localtime') AS neighbor_last_heard,
         lp1.latitude AS node_latitude,
         lp1.longitude AS node_longitude,
         lp2.latitude AS neighbor_latitude,
@@ -66,7 +71,9 @@ NodesWithNeighbors AS (
         LatestPositions lp2 ON n2.user_id = lp2.node_id AND lp2.rn = 1
     WHERE
         lp1.latitude IS NOT NULL AND lp1.longitude IS NOT NULL AND
-        lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL
+        lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL AND
+        n1.last_heard > {active_cutoff_unix} AND
+        (n2.last_heard IS NULL OR n2.last_heard > {active_cutoff_unix})
     ORDER BY 
         n1.long_name, neighbor_last_heard DESC
 )
@@ -77,7 +84,7 @@ SELECT
     n.long_name AS node_long_name,
     n.hw_model AS node_hw_model,
     n.short_name AS node_short_name,
-    datetime(n.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+    strftime('%d.%m.%Y %H:%M:%S', n.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
     NULL AS neighbor_user_id,
     NULL AS neighbor_long_name,
     NULL AS neighbor_hw_model,
@@ -98,7 +105,8 @@ LEFT JOIN
 LEFT JOIN 
     LatestPositions lp ON n.user_id = lp.node_id AND lp.rn = 1
 WHERE 
-    ag.node_id IS NULL AND lp.latitude IS NOT NULL AND lp.longitude IS NOT NULL;
+    ag.node_id IS NULL AND lp.latitude IS NOT NULL AND lp.longitude IS NOT NULL AND
+    n.last_heard > {active_cutoff_unix};
 """
 
 cursor.execute(query)
@@ -180,6 +188,9 @@ for row in results:
             'neighbor_long_name': neighbor_long_name
         })
 
+# Count the total number of unique nodes
+total_nodes = len(node_positions) + len(no_neighbor_positions)
+
 # Create the map centered around the first node with Folium
 if node_positions or no_neighbor_positions:
     first_position = (next(iter(node_positions.values()))['latitude'], next(iter(node_positions.values()))['longitude']) \
@@ -251,6 +262,18 @@ if node_positions or no_neighbor_positions:
     node_group.add_to(folium_map)
     connection_group.add_to(folium_map)
     no_neighbor_group.add_to(folium_map)
+
+    # Add a timestamp and total node count at the top of the map as a custom HTML element
+    timestamp = datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+    info_html = f"""
+    <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+                font-size: 12px; color: black; background-color: white; padding: 5px; 
+                border: 2px solid gray; z-index: 9999; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
+        Map generated on {timestamp}<br>
+        Total nodes displayed: {total_nodes}
+    </div>
+    """
+    folium_map.get_root().html.add_child(folium.Element(info_html))
 
     # Add layer control to toggle visibility
     folium.LayerControl().add_to(folium_map)
