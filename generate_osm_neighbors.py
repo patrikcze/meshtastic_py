@@ -4,8 +4,8 @@ import folium
 from folium.plugins import MarkerCluster
 from datetime import datetime, timedelta
 
-# Define the cutoff for "active" nodes (last 7 days)
-active_cutoff = datetime.now() - timedelta(days=7)
+# Define the cutoff for "active" nodes (last 1 days)
+active_cutoff = datetime.now() - timedelta(days=1)
 active_cutoff_unix = int(active_cutoff.timestamp())
 
 # Connect to the SQLite database
