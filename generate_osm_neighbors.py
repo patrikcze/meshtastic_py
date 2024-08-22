@@ -2,20 +2,24 @@
 import sqlite3
 import folium
 from folium.plugins import MarkerCluster
+from datetime import datetime, timedelta
+
+# Define the cutoff for "active" nodes (last 1 day)
+active_cutoff = datetime.now() - timedelta(days=1)
 
 # Connect to the SQLite database
 conn = sqlite3.connect('messages.db')
 cursor = conn.cursor()
 
 # Combined query to fetch nodes, neighbors, positions, and SNR details
-query = """
+query = f"""
 WITH LatestPositions AS (
     SELECT 
         p.node_id,
         p.latitude,
         p.longitude,
         p.altitude,
-        datetime(p.timestamp, 'unixepoch', 'localtime') AS last_position_time,
+        strftime('%d.%m.%Y %H:%M:%S', p.timestamp, 'unixepoch', 'localtime') AS last_position_time,
         ROW_NUMBER() OVER (PARTITION BY p.node_id ORDER BY p.timestamp DESC) AS rn
     FROM 
         positions p
@@ -40,12 +44,12 @@ NodesWithNeighbors AS (
         n1.long_name AS node_long_name,
         n1.hw_model AS node_hw_model,
         n1.short_name AS node_short_name,
-        datetime(n1.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+        strftime('%d.%m.%Y %H:%M:%S', n1.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
         n2.user_id AS neighbor_user_id,
         n2.long_name AS neighbor_long_name,
         n2.hw_model AS neighbor_hw_model,
         n2.short_name AS neighbor_short_name,
-        datetime(ag.last_seen, 'unixepoch', 'localtime') AS neighbor_last_heard,
+        strftime('%d.%m.%Y %H:%M:%S', ag.last_seen, 'unixepoch', 'localtime') AS neighbor_last_heard,
         lp1.latitude AS node_latitude,
         lp1.longitude AS node_longitude,
         lp2.latitude AS neighbor_latitude,
@@ -77,7 +81,7 @@ SELECT
     n.long_name AS node_long_name,
     n.hw_model AS node_hw_model,
     n.short_name AS node_short_name,
-    datetime(n.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+    strftime('%d.%m.%Y %H:%M:%S', n.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
     NULL AS neighbor_user_id,
     NULL AS neighbor_long_name,
     NULL AS neighbor_hw_model,
@@ -133,6 +137,15 @@ for row in results:
     max_snr = row[16]
     record_count = row[17]
 
+    node_last_heard_dt = datetime.strptime(node_last_heard, '%d.%m.%Y %H:%M:%S')
+    node_is_active = node_last_heard_dt > active_cutoff
+
+    if neighbor_last_heard:
+        neighbor_last_heard_dt = datetime.strptime(neighbor_last_heard, '%d.%m.%Y %H:%M:%S')
+        neighbor_is_active = neighbor_last_heard_dt > active_cutoff
+    else:
+        neighbor_is_active = False
+
     if neighbor_long_name is None:
         # Handle nodes without neighbors
         no_neighbor_positions.append({
@@ -142,7 +155,8 @@ for row in results:
             'hw_model': node_hw_model,
             'short_name': node_short_name,
             'last_heard': node_last_heard,
-            'long_name': node_long_name
+            'long_name': node_long_name,
+            'is_active': node_is_active
         })
     else:
         # Ensure each node has only one marker on the map
@@ -153,7 +167,8 @@ for row in results:
                 'user_id': node_user_id,
                 'hw_model': node_hw_model,
                 'short_name': node_short_name,
-                'last_heard': node_last_heard
+                'last_heard': node_last_heard,
+                'is_active': node_is_active
             }
 
         if neighbor_long_name not in node_positions:
@@ -163,7 +178,8 @@ for row in results:
                 'user_id': neighbor_user_id,
                 'hw_model': neighbor_hw_model,
                 'short_name': neighbor_short_name,
-                'last_heard': neighbor_last_heard
+                'last_heard': neighbor_last_heard,
+                'is_active': neighbor_is_active
             }
 
         # Add the connection between the node and its neighbor with SNR details
@@ -177,8 +193,13 @@ for row in results:
             'max_snr': max_snr,
             'record_count': record_count,
             'node_long_name': node_long_name,
-            'neighbor_long_name': neighbor_long_name
+            'neighbor_long_name': neighbor_long_name,
+            'node_is_active': node_is_active,
+            'neighbor_is_active': neighbor_is_active
         })
+
+# Count the total number of unique nodes
+total_nodes = len(node_positions) + len(no_neighbor_positions)
 
 # Create the map centered around the first node with Folium
 if node_positions or no_neighbor_positions:
@@ -196,6 +217,7 @@ if node_positions or no_neighbor_positions:
 
     # Add nodes to the map with customized popups
     for node_long_name, details in node_positions.items():
+        color = "blue" if details['is_active'] else "gray"
         popup_html = f"""
         <div style="font-size: 14px; text-align: left; width: 250px;">
             <b>{node_long_name}</b><br>
@@ -209,11 +231,15 @@ if node_positions or no_neighbor_positions:
         folium.Marker(
             location=[details['latitude'], details['longitude']],
             popup=popup,
-            icon=folium.Icon(color="blue")
+            icon=folium.Icon(color=color)
         ).add_to(marker_cluster)
 
     # Draw connections between nodes and their neighbors with SNR details
     for connection in connections:
+        line_style = {'color': 'blue', 'weight': 2.5}
+        if not connection['node_is_active'] or not connection['neighbor_is_active']:
+            line_style['dash_array'] = '5, 5'  # dashed line for inactive nodes
+
         line_popup = folium.Popup(
             f"<b>Connection between:</b> {connection['node_long_name']} <b>and</b> {connection['neighbor_long_name']}<br>"
             f"<b>Average SNR:</b> {connection['average_snr']:.2f}<br>"
@@ -224,13 +250,13 @@ if node_positions or no_neighbor_positions:
         )
         folium.PolyLine(
             locations=[[connection['node_latitude'], connection['node_longitude']], [connection['neighbor_latitude'], connection['neighbor_longitude']]],
-            color="blue",
-            weight=2.5,
+            **line_style,
             popup=line_popup
         ).add_to(connection_group)
 
     # Add nodes without neighbors to the map
     for details in no_neighbor_positions:
+        color = "red" if details['is_active'] else "gray"
         popup_html = f"""
         <div style="font-size: 14px; text-align: left; width: 250px;">
             <b>{details['long_name']}</b><br>
@@ -244,13 +270,25 @@ if node_positions or no_neighbor_positions:
         folium.Marker(
             location=[details['latitude'], details['longitude']],
             popup=popup,
-            icon=folium.Icon(color="red")
+            icon=folium.Icon(color=color)
         ).add_to(no_neighbor_group)
 
     # Add the groups to the map
     node_group.add_to(folium_map)
     connection_group.add_to(folium_map)
     no_neighbor_group.add_to(folium_map)
+
+    # Add a timestamp and total node count at the top of the map as a custom HTML element
+    timestamp = datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+    info_html = f"""
+    <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+                font-size: 12px; color: black; background-color: white; padding: 5px; 
+                border: 2px solid gray; z-index: 9999; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
+        Map generated on {timestamp}<br>
+        Total nodes displayed: {total_nodes}
+    </div>
+    """
+    folium_map.get_root().html.add_child(folium.Element(info_html))
 
     # Add layer control to toggle visibility
     folium.LayerControl().add_to(folium_map)
