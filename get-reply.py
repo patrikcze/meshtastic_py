@@ -329,6 +329,8 @@ def on_receive(packet, interface):
         hop_limit = packet.get('hopLimit', 0)
         hop_start = packet.get('hopStart', 0)
         rx_time = packet.get('rxTime', 0)
+        rx_snr = packet.get('rxSnr', None)  # Signal-to-Noise Ratio
+        rx_rssi = packet.get('rxRssi', None)  # Received Signal Strength Indicator
 
         # Calculate hops away
         hops_away = hop_start - hop_limit
@@ -359,15 +361,20 @@ def on_receive(packet, interface):
         if portnum == 'TEXT_MESSAGE_APP' and text:
             logger.info(f"✉️  Plain text message received from {from_short_name} ({fromId}) to {to_short_name} ({toId}) on channel {channel}: {text}")
             store_message(message_id, fromId, toId, text, timestamp, channel)
-        # Respond to specific messages
+
+            # Respond to specific messages
             if text == 'Ping':
                 current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                logger.info(f"Received 'Ping' from {fromId}. Sending 'pong' and trace route.")
                 reply_text = (
                     f"[Automatic Reply]\n🏓 pong to {fromId} at {current_time}.\n"
                     f"Hops away: {hops_away}\n"
                     f"Receive time: {rx_time_human}"
                 )
+
+                # Include rx_snr and rx_rssi if hops_away is 0
+                if hops_away == 0:
+                    reply_text += f"\nReceived Signal: SNR={rx_snr} dB, RSSI={rx_rssi} dBm"
+
                 try:
                     send_message(interface, fromId, reply_text, channel, toId)
                     send_trace_route(interface, fromId, hop_limit=3, channelIndex=channel)
