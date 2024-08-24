@@ -208,8 +208,8 @@ if node_positions or no_neighbor_positions:
     folium_map = folium.Map(location=first_position, zoom_start=10)
 
     # Create feature groups for markers, lines, and nodes without neighbors
-    node_group = folium.FeatureGroup(name="Nodes")
-    connection_group = folium.FeatureGroup(name="Connections")
+    node_group = folium.FeatureGroup(name="Nodes with neighbors")
+    connection_group = folium.FeatureGroup(name="Neigbours")
     no_neighbor_group = folium.FeatureGroup(name="Nodes without Neighbors")
 
     # Use MarkerCluster to handle overlapping markers
