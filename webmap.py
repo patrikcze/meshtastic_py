@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-# Define the cutoff for "active" nodes (last 1 days)
-active_cutoff = datetime.now() - timedelta(days=1)
+# Define the cutoff for "active" nodes (last 2 days)
+active_cutoff = datetime.now() - timedelta(days=2)
 
 def generate_map():
     # Connect to the SQLite database
