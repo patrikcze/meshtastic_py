@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-# Define the cutoff for "active" nodes (last 5 days)
-active_cutoff = datetime.now() - timedelta(days=5)
+# Define the cutoff for "active" nodes (last 1 days)
+active_cutoff = datetime.now() - timedelta(days=1)
 
 def generate_map():
     # Connect to the SQLite database
@@ -212,9 +212,9 @@ def generate_map():
         folium_map = folium.Map(location=first_position, zoom_start=10)
 
         # Create feature groups for markers, lines, and nodes without neighbors
-        node_group = folium.FeatureGroup(name="Nodes")
-        connection_group = folium.FeatureGroup(name="Connections")
-        no_neighbor_group = folium.FeatureGroup(name="Nodes without Neighbors")
+        node_group = folium.FeatureGroup(name="Nodes with neigbors")
+        connection_group = folium.FeatureGroup(name="Neigbors")
+        no_neighbor_group = folium.FeatureGroup(name="Nodes without neighbors")
 
         # Use MarkerCluster to handle overlapping markers
         marker_cluster = MarkerCluster().add_to(node_group)
