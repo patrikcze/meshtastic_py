@@ -9,6 +9,8 @@ app = Flask(__name__)
 
 # Define the cutoff for "active" nodes (last 2 days)
 active_cutoff = datetime.now() - timedelta(days=2)
+# We will select only nodes that have been active in the last 2 days
+active_cutoff_unix = int(active_cutoff.timestamp())
 
 def generate_map():
     # Connect to the SQLite database
@@ -74,7 +76,7 @@ def generate_map():
             LatestPositions lp2 ON n2.user_id = lp2.node_id AND lp2.rn = 1
         WHERE
             lp1.latitude IS NOT NULL AND lp1.longitude IS NOT NULL AND
-            lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL
+            lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL AND (n2.last_heard IS NULL OR n2.last_heard > {active_cutoff_unix})
         ORDER BY 
             n1.long_name, neighbor_last_heard DESC
     )
@@ -218,7 +220,7 @@ def generate_map():
 
         # Create feature groups for markers, lines, and nodes without neighbors
         node_group = folium.FeatureGroup(name="Nodes with neighbors")
-        connection_group = folium.FeatureGroup(name="Neighbors")
+        connection_group = folium.FeatureGroup(name="Neighbors", show=False)
         no_neighbor_group = folium.FeatureGroup(name="Nodes without neighbors")
 
         # Use MarkerCluster to handle overlapping markers
