@@ -141,10 +141,15 @@ def generate_map():
         max_snr = row[16]
         record_count = row[17]
 
-        node_last_heard_dt = datetime.strptime(node_last_heard, '%d.%m.%Y %H:%M:%S')
-        node_is_active = node_last_heard_dt > active_cutoff
+        # Handle cases where node_last_heard is None
+        if node_last_heard is not None:
+            node_last_heard_dt = datetime.strptime(node_last_heard, '%d.%m.%Y %H:%M:%S')
+            node_is_active = node_last_heard_dt > active_cutoff
+        else:
+            node_is_active = False
 
-        if neighbor_last_heard:
+        # Handle cases where neighbor_last_heard is None
+        if neighbor_last_heard is not None:
             neighbor_last_heard_dt = datetime.strptime(neighbor_last_heard, '%d.%m.%Y %H:%M:%S')
             neighbor_is_active = neighbor_last_heard_dt > active_cutoff
         else:
@@ -212,8 +217,8 @@ def generate_map():
         folium_map = folium.Map(location=first_position, zoom_start=10)
 
         # Create feature groups for markers, lines, and nodes without neighbors
-        node_group = folium.FeatureGroup(name="Nodes with neigbors")
-        connection_group = folium.FeatureGroup(name="Neigbors")
+        node_group = folium.FeatureGroup(name="Nodes with neighbors")
+        connection_group = folium.FeatureGroup(name="Neighbors")
         no_neighbor_group = folium.FeatureGroup(name="Nodes without neighbors")
 
         # Use MarkerCluster to handle overlapping markers
