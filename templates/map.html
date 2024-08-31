@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mesh Network Map</title>
+    <!-- Add Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Add Leaflet Search CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-search/dist/leaflet-search.min.css" />
+    <!-- Bootstrap for better styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <form method="get" class="d-flex align-items-center p-2">
+        <label for="search" class="me-2">Search by Long Name or User ID:</label>
+        <input type="text" id="search" name="search" class="form-control me-2" placeholder="Enter name or ID"
+            autocomplete="off" list="suggestions">
+        <datalist id="suggestions"></datalist>
+        <input type="submit" value="Search" class="btn btn-primary">
+    </form>
+
+    <!-- Add the map container -->
+    <div id="map" style="width: 100%; height: 500px;">{{ map_html | safe }}</div>
+
+    <!-- Add Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Add Leaflet Search JS -->
+    <script src="https://unpkg.com/leaflet-search/dist/leaflet-search.min.js"></script>
+    <!-- Add jQuery for simplicity -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5 Typeahead for autocomplete -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript to initialize the map and handle autocomplete -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var map = L.map('map').setView([49.2, 16.6], 13);
+
+            // Define a LayerGroup for all the markers
+            var markersLayer = L.layerGroup().addTo(map);
+
+            // Example: Adding markers from the Flask-generated map
+            {% for marker in markers %}
+            var marker = L.marker([{{ marker.latitude }}, {{ marker.longitude }}])
+            .bindPopup("<b>{{ marker.long_name }}</b><br>User ID: {{ marker.user_id }}")
+            .addTo(markersLayer); // Add each marker to the LayerGroup
+        {% endfor %}
+
+        // Add search control that searches the markersLayer
+        var searchControl = new L.Control.Search({
+            layer: markersLayer, // Correctly pass the LayerGroup here
+            propertyName: 'name', // Property name in marker data (adjust if necessary)
+            marker: false, // Disable automatic marker placement
+            moveToLocation: function (latlng, title, map) {
+                map.setView(latlng, 14);
+            }
+        });
+
+        searchControl.on('search:locationfound', function (e) {
+            if (e.layer._popup) {
+                e.layer.openPopup();
+            }
+        });
+
+        map.addControl(searchControl);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, request
 import sqlite3
 import folium
 from folium.plugins import MarkerCluster
@@ -12,12 +12,15 @@ active_cutoff = datetime.now() - timedelta(days=2)
 # We will select only nodes that have been active in the last 2 days
 active_cutoff_unix = int(active_cutoff.timestamp())
 
-def generate_map():
+def convert_unix_to_str(unix_time):
+    return datetime.fromtimestamp(unix_time).strftime('%d.%m.%Y %H:%M:%S') if unix_time else None
+
+def generate_map(user_id=None):
     # Connect to the SQLite database
     conn = sqlite3.connect('messages.db')
     cursor = conn.cursor()
 
-    #  Combined query to fetch nodes, neighbors, positions, and SNR details
+    # Base query to fetch nodes and neighbors
     query = f"""
     WITH LatestPositions AS (
         SELECT 
@@ -25,7 +28,7 @@ def generate_map():
             p.latitude,
             p.longitude,
             p.altitude,
-            strftime('%d.%m.%Y %H:%M:%S', p.timestamp, 'unixepoch', 'localtime') AS last_position_time,
+            p.timestamp AS last_position_time,
             ROW_NUMBER() OVER (PARTITION BY p.node_id ORDER BY p.timestamp DESC) AS rn
         FROM 
             positions p
@@ -50,12 +53,12 @@ def generate_map():
             n1.long_name AS node_long_name,
             n1.hw_model AS node_hw_model,
             n1.short_name AS node_short_name,
-            strftime('%d.%m.%Y %H:%M:%S', n1.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+            n1.last_heard AS node_last_heard,
             n2.user_id AS neighbor_user_id,
             n2.long_name AS neighbor_long_name,
             n2.hw_model AS neighbor_hw_model,
             n2.short_name AS neighbor_short_name,
-            strftime('%d.%m.%Y %H:%M:%S', ag.last_seen, 'unixepoch', 'localtime') AS neighbor_last_heard,
+            ag.last_seen AS neighbor_last_heard,
             lp1.latitude AS node_latitude,
             lp1.longitude AS node_longitude,
             lp2.latitude AS neighbor_latitude,
@@ -77,6 +80,13 @@ def generate_map():
         WHERE
             lp1.latitude IS NOT NULL AND lp1.longitude IS NOT NULL AND
             lp2.latitude IS NOT NULL AND lp2.longitude IS NOT NULL AND (n2.last_heard IS NULL OR n2.last_heard > {active_cutoff_unix})
+    """
+
+    # Apply the filter if a user_id is provided
+    if user_id:
+        query += f" AND n1.user_id = '{user_id}'"
+
+    query += """
         ORDER BY 
             n1.long_name, neighbor_last_heard DESC
     )
@@ -87,7 +97,7 @@ def generate_map():
         n.long_name AS node_long_name,
         n.hw_model AS node_hw_model,
         n.short_name AS node_short_name,
-        strftime('%d.%m.%Y %H:%M:%S', n.last_heard, 'unixepoch', 'localtime') AS node_last_heard,
+        n.last_heard AS node_last_heard,
         NULL AS neighbor_user_id,
         NULL AS neighbor_long_name,
         NULL AS neighbor_hw_model,
@@ -108,8 +118,12 @@ def generate_map():
     LEFT JOIN 
         LatestPositions lp ON n.user_id = lp.node_id AND lp.rn = 1
     WHERE 
-        ag.node_id IS NULL AND lp.latitude IS NOT NULL AND lp.longitude IS NOT NULL;
+        ag.node_id IS NULL AND lp.latitude IS NOT NULL AND lp.longitude IS NOT NULL
     """
+
+    # Apply the filter if a user_id is provided
+    if user_id:
+        query += f" AND n.user_id = '{user_id}'"
 
     cursor.execute(query)
     results = cursor.fetchall()
@@ -128,12 +142,12 @@ def generate_map():
         node_long_name = row[1]
         node_hw_model = row[2]
         node_short_name = row[3]
-        node_last_heard = row[4]
+        node_last_heard = convert_unix_to_str(row[4])
         neighbor_user_id = row[5]
         neighbor_long_name = row[6]
         neighbor_hw_model = row[7]
         neighbor_short_name = row[8]
-        neighbor_last_heard = row[9]
+        neighbor_last_heard = convert_unix_to_str(row[9])
         node_latitude = row[10]
         node_longitude = row[11]
         neighbor_latitude = row[12]
@@ -220,7 +234,7 @@ def generate_map():
 
         # Create feature groups for markers, lines, and nodes without neighbors
         node_group = folium.FeatureGroup(name="Nodes with neighbors")
-        connection_group = folium.FeatureGroup(name="Neighbors", show=False)
+        connection_group = folium.FeatureGroup(name="Neighbors", show = False)
         no_neighbor_group = folium.FeatureGroup(name="Nodes without neighbors")
 
         # Use MarkerCluster to handle overlapping markers
@@ -251,12 +265,22 @@ def generate_map():
             if not connection['node_is_active'] or not connection['neighbor_is_active']:
                 line_style['dash_array'] = '5, 5'  # dashed line for inactive nodes
 
+            # Convert the timestamp from Unix to a readable format
+            neighbor_last_heard_str = 'N/A'
+            if connection.get('neighbor_last_heard'):
+                try:
+                    neighbor_last_heard_str = datetime.fromtimestamp(connection['neighbor_last_heard']).strftime('%d.%m.%Y %H:%M:%S')
+                except Exception as e:
+                    print(f"Error converting timestamp: {e}")
+                    neighbor_last_heard_str = 'N/A'
+
             line_popup = folium.Popup(
                 f"<b>Connection between:</b> {connection['node_long_name']} <b>and</b> {connection['neighbor_long_name']}<br>"
                 f"<b>Average SNR:</b> {connection['average_snr']:.2f}<br>"
                 f"<b>Min SNR:</b> {connection['min_snr']:.2f}<br>"
                 f"<b>Max SNR:</b> {connection['max_snr']:.2f}<br>"
-                f"<b>Records Collected:</b> {connection['record_count']}", 
+                f"<b>Records Collected:</b> {connection['record_count']}<br>"
+                f"<b>Last SNR Recorded:</b> {neighbor_last_heard_str}", 
                 max_width=300
             )
             folium.PolyLine(
@@ -264,6 +288,9 @@ def generate_map():
                 **line_style,
                 popup=line_popup
             ).add_to(connection_group)
+
+
+
 
         # Add nodes without neighbors to the map
         for details in no_neighbor_positions:
@@ -311,20 +338,69 @@ def generate_map():
     else:
         return "<p>No valid coordinates available to create the map.</p>"
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    map_html = generate_map()
+    user_id = None
+    if request.method == 'POST':
+        user_id = request.form.get('user_id')
+
+    map_html = generate_map(user_id=user_id)
     return render_template_string("""
         <!DOCTYPE html>
         <html>
         <head>
             <title>Mesh Network Map</title>
+            <!-- Bootstrap CSS -->
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <!-- Optional: Custom CSS -->
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                }
+                .search-bar {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 20px;
+                }
+                .search-bar label {
+                    margin-right: 15px;
+                    line-height: 1.5; /* Adjust this line height to match the height of the input field */
+                }
+                .search-bar input[type="text"] {
+                    width: 300px;
+                    margin-right: 10px;
+                    padding: 10px; /* Ensure this padding is consistent with the label's line-height */
+                    height: auto; /* Make sure height adjusts according to padding */
+                }
+                .search-bar input[type="submit"] {
+                    padding: 10px 12px; /* Adjust padding to match input field height */
+                }
+                #map {
+                    width: 100%;
+                    height: 90vh; /* Takes 90% of the viewport height */
+                    margin: 0;
+                    padding: 0;
+                }
+            </style>
         </head>
         <body>
-            {{ map_html | safe }}
+            <div class="search-bar">
+                <form method="post" action="/" class="d-flex align-items-center">
+                    <label for="user_id" class="form-label me-2">Search by User ID:</label>
+                    <input type="text" id="user_id" name="user_id" class="form-control" placeholder="Enter User ID">
+                    <input type="submit" value="Search" class="btn btn-primary">
+                </form>
+            </div>
+            <div id="map">{{ map_html | safe }}</div>
+            <!-- Bootstrap JS (Optional) -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         </body>
         </html>
     """, map_html=map_html)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8000)
