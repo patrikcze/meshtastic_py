@@ -220,7 +220,8 @@ def generate_map(user_id=None):
                 'node_long_name': node_long_name,
                 'neighbor_long_name': neighbor_long_name,
                 'node_is_active': node_is_active,
-                'neighbor_is_active': neighbor_is_active
+                'neighbor_is_active': neighbor_is_active,
+                'neighbor_last_heard': neighbor_last_heard_dt if neighbor_last_heard_dt else None
             })
 
     # Count the total number of unique nodes
@@ -259,20 +260,14 @@ def generate_map(user_id=None):
                 icon=folium.Icon(color=color)
             ).add_to(marker_cluster)
 
-        # Draw connections between nodes and their neighbors with SNR details
+       # Draw connections between nodes and their neighbors with SNR details
         for connection in connections:
             line_style = {'color': 'blue', 'weight': 2.5}
             if not connection['node_is_active'] or not connection['neighbor_is_active']:
                 line_style['dash_array'] = '5, 5'  # dashed line for inactive nodes
 
-            # Convert the timestamp from Unix to a readable format
-            neighbor_last_heard_str = 'N/A'
-            if connection.get('neighbor_last_heard'):
-                try:
-                    neighbor_last_heard_str = datetime.fromtimestamp(connection['neighbor_last_heard']).strftime('%d.%m.%Y %H:%M:%S')
-                except Exception as e:
-                    print(f"Error converting timestamp: {e}")
-                    neighbor_last_heard_str = 'N/A'
+            # Directly use the already converted datetime string
+            neighbor_last_heard_str = connection.get('neighbor_last_heard', 'N/A')
 
             line_popup = folium.Popup(
                 f"<b>Connection between:</b> {connection['node_long_name']} <b>and</b> {connection['neighbor_long_name']}<br>"
@@ -280,7 +275,7 @@ def generate_map(user_id=None):
                 f"<b>Min SNR:</b> {connection['min_snr']:.2f}<br>"
                 f"<b>Max SNR:</b> {connection['max_snr']:.2f}<br>"
                 f"<b>Records Collected:</b> {connection['record_count']}<br>"
-                f"<b>Last SNR Recorded:</b> {neighbor_last_heard_str}", 
+                f"<b>Last SNR Recorded:</b> {neighbor_last_heard_str}<br>", 
                 max_width=300
             )
             folium.PolyLine(
@@ -288,8 +283,6 @@ def generate_map(user_id=None):
                 **line_style,
                 popup=line_popup
             ).add_to(connection_group)
-
-
 
 
         # Add nodes without neighbors to the map
