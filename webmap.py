@@ -267,7 +267,7 @@ def generate_map(user_id=None):
                 line_style['dash_array'] = '5, 5'  # dashed line for inactive nodes
 
             # Directly use the already converted datetime string
-            neighbor_last_heard_str = connection.get('neighbor_last_heard', 'N/A')
+            neighbor_last_heard_str = connection['neighbor_last_heard'].strftime('%d.%m.%Y %H:%M:%S') if connection['neighbor_last_heard'] else 'N/A'
 
             line_popup = folium.Popup(
                 f"<b>Connection between:</b> {connection['node_long_name']} <b>and</b> {connection['neighbor_long_name']}<br>"
