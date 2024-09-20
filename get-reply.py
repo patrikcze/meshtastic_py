@@ -109,6 +109,14 @@ def initialize_db():
                     routes TEXT,
                     timestamp INTEGER
                 )''')
+    # Index the database for faster lookups
+    # Create indexes to optimize query performance
+    c.execute('''CREATE INDEX IF NOT EXISTS idx_positions_node_id_timestamp ON positions(node_id, timestamp);''')
+    c.execute('''CREATE INDEX IF NOT EXISTS idx_neighbors_node_id_neighbor_node_id ON neighbors(node_id, neighbor_node_id);''')
+    c.execute('''CREATE INDEX IF NOT EXISTS idx_neighbors_timestamp ON neighbors(timestamp);''')
+    c.execute('''CREATE INDEX IF NOT EXISTS idx_nodes_node_number ON nodes(node_number);''')
+    c.execute('''CREATE INDEX IF NOT EXISTS idx_positions_node_id ON positions(node_id);''')
+
     conn.commit()
     conn.close()
     logger.info("Database initialized successfully.")
