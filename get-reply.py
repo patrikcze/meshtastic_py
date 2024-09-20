@@ -527,6 +527,7 @@ def main():
     # Initialize the database
     initialize_db()
     # INFO: Using the serial interface for now NEED TO FIX
+    # INFO: Pull request created. Waiting for approval
     # PROBLEMS REPORTED WITH CONNECTION!!!! RETURNING BACK TO SERIAL
     # Initialize the serial interface
     interface = meshtastic.serial_interface.SerialInterface()
