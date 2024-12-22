@@ -4,6 +4,9 @@ import meshtastic.serial_interface
 import time
 import requests
 
+from pubsub import pub  # Import pubsub for subscriptions
+
+
 # Constants
 GEMINI_API_URL = "https://api.gemini.ai/v1/chat"
 API_KEY = "your_gemini_api_key_here"  # Replace with your API key
@@ -62,10 +65,29 @@ def on_receive(packet, interface):
 
 def main():
     # Initialize the Meshtastic interface
-    interface = meshtastic.serial_interface.SerialInterface()
+    try:
+        interface = meshtastic.serial_interface.SerialInterface()
+    except Exception as e:
+        print(f"Failed to connect to Meshtastic device: {e}")
+        sys.exit(1)
 
     # Subscribe to incoming messages
-    interface.subscribe(on_receive)
+    pub.subscribe(lambda packet: on_receive(packet, interface), "meshtastic.receive")
+
+    # Display device information
+    if interface.nodes:
+        for node in interface.nodes.values():
+            if node.get("num") == interface.myInfo.my_node_num:
+                print(f"Connected to device: {node['user']['shortName']} ({node['num']})")
+
+    # Display LoRa configuration if available
+    lora_config = getattr(interface.localNode.localConfig, 'lora', None)
+    if lora_config:
+        modem_preset = getattr(lora_config, 'modem_preset', "Unknown")
+        region = getattr(lora_config, 'region', "Unknown")
+        print(f"LoRa Config - Modem Preset: {modem_preset}, Region: {region}")
+    else:
+        print("No LoRa configuration found.")
 
     print("Listening for messages... Press Ctrl+C to stop.")
     try:
@@ -73,6 +95,10 @@ def main():
             time.sleep(1)
     except KeyboardInterrupt:
         print("Stopping message listener...")
+    finally:
+        interface.close()
+
+
 
 if __name__ == "__main__":
     main()
